@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+/* Black Ops One (SIL OFL 1.1, public/fonts/BlackOpsOne-OFL.txt): display face for the scoreboard,
+   judge's-call stamp, hero and big summary numbers only. Too heavy for headings or body text.
+   Archivo + IBM Plex Mono load from Google Fonts in index.html. */
+@font-face {
+  font-family: "Black Ops One";
+  src: url("/fonts/BlackOpsOne-Regular.ttf") format("truetype");
+  font-display: swap;
+}
+
+/* Design tokens, named the way shadcn/ui components expect them.
+   Verdict colours (proper / norep / uncertain) are reserved for verdicts only. */
+:root {
+  --background: #0a0c0f;
+  --foreground: #eceef1;
+  --card: #12151a;
+  --card-foreground: #eceef1;
+  --popover: #191d24;
+  --popover-foreground: #eceef1;
+  --primary: #4da3ff;
+  --primary-foreground: #06121f;
+  --secondary: #191d24;
+  --secondary-foreground: #eceef1;
+  --muted: #191d24;
+  --muted-foreground: #8b93a0;
+  --accent: #1f242c;            /* shadcn "accent" = hover surface, not a brand colour */
+  --accent-foreground: #eceef1;
+  --destructive: #f04438;
+  --border: #262b34;
+  --input: #262b34;
+  --ring: #4da3ff;
+  --proper: #22c55e;
+  --norep: #f04438;
+  --uncertain: #f5a524;
+  --radius: 12px;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-proper: var(--proper);
+  --color-norep: var(--norep);
+  --color-uncertain: var(--uncertain);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: Archivo, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-display: "Black Ops One", Archivo, system-ui, sans-serif;
+}
+
+@layer base {
+  * { @apply border-border; }
+  body { @apply bg-background font-sans text-foreground antialiased; }
+}
+
+/* Indeterminate progress (processing state): no fake percentage. */
+@keyframes slide {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(300%); }
+}
+
+/* "Can't judge" never relies on colour alone: diagonal stripes, used on top of the amber fill. */
+.stripes {
+  background-image: repeating-linear-gradient(-45deg, transparent 0 6px, rgb(0 0 0 / 0.28) 6px 12px);
+}
+
+/* Scoreboard ticker: the line is written twice, so sliding by half (plus half the gap) lands where it started. */
+@keyframes ticker { to { transform: translateX(calc(-50% - 0.75rem)); } }
+.ticker { animation: ticker 40s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .ticker { animation: none; } }
+
+/* Landing: faint pitch grid that fades out toward the edges. */
+.grid-bg { position: relative; isolation: isolate; }
+.grid-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, #000 55%, transparent);
+}
+
+/* Giant outlined step numbers behind the cards. */
+.outline-num {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--border);
+  transition: -webkit-text-stroke-color 0.3s;
+}
+.group:hover .outline-num { -webkit-text-stroke-color: color-mix(in srgb, var(--primary) 50%, transparent); }
+
+/* Scroll reveal, CSS only: browsers without scroll-driven animations just show the content. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
+}
+@keyframes reveal { from { opacity: 0; transform: translateY(24px); } }

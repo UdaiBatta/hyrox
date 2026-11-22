@@ -1,0 +1,292 @@
+{
+ "view": "side",
+ "fps": 30,
+ "n_frames": 450,
+ "reps": [
+  {
+   "n": 1,
+   "start": 16,
+   "bottom": 45,
+   "release": 70,
+   "end": 74,
+   "t_bottom": 1.5,
+   "rules": {
+    "WB-01": {
+     "status": "pass",
+     "low_confidence": false,
+     "value": 0.129,
+     "threshold": -0.17,
+     "reason": "hip 0.13 L below knee at the bottom"
+    },
+    "WB-02": {
+     "status": "pass",
+     "low_confidence": false,
+     "value": 0.767,
+     "threshold": 0.2,
+     "reason": "stood tall for 0.77 s before rep 1"
+    },
+    "WB-04": {
+     "status": "pass",
+     "low_confidence": false,
+     "value": 0.0,
+     "threshold": 0.6,
+     "reason": "both hands on the ball at release"
+    },
+    "WB-05": {
+     "status": "not_assessable",
+     "low_confidence": false,
+     "value": null,
+     "threshold": null,
+     "reason": "ball isn't tracked by body pose (see Part 2)"
+    }
+   },
+   "verdict": "proper",
+   "failed": [],
+   "unsure": []
+  },
+  {
+   "n": 2,
+   "start": 74,
+   "bottom": 105,
+   "release": 130,
+   "end": 134,
+   "t_bottom": 3.5,
+   "rules": {
+    "WB-01": {
+     "status": "pass",
+     "low_confidence": false,
+     "value": 0.129,
+     "threshold": -0.17,
+     "reason": "hip 0.13 L below knee at the bottom"
+    },
+    "WB-04": {
+     "status": "pass",
+     "low_confidence": false,
+     "value": 0.0,
+     "threshold": 0.6,
+     "reason": "both hands on the ball at release"
+    },
+    "WB-05": {
+     "status": "not_assessable",
+     "low_confidence": false,
+     "value": null,
+     "threshold": null,
+     "reason": "ball isn't tracked by body pose (see Part 2)"
+    }
+   },
+   "verdict": "proper",
+   "failed": [],
+   "unsure": []
+  },
+  {
+   "n": 3,
+   "start": 134,
+   "bottom": 165,
+   "release": 190,
+   "end": 196,
+   "t_bottom": 5.5,
+   "rules": {
+    "WB-01": {
+     "status": "fail",
+     "low_confidence": false,
+     "value": -0.304,
+     "threshold": -0.17,
+     "reason": "hip 0.30 L above knee at the bottom"
+    },
+    "WB-04": {
+     "status": "pass",
+     "low_confidence": false,
+     "value": 0.0,
+     "threshold": 0.6,
+     "reason": "both hands on the ball at release"
+    },
+    "WB-05": {
+     "status": "not_assessable",
+     "low_confidence": false,
+     "value": null,
+     "threshold": null,
+     "reason": "ball isn't tracked by body pose (see Part 2)"
+    }
+   },
+   "verdict": "not_proper",
+   "failed": [
+    "WB-01"
+   ],
+   "unsure": []
+  },
+  {
+   "n": 4,
+   "start": 196,
+   "bottom": 225,
+   "release": 250,
+   "end": 254,
+   "t_bottom": 7.5,
+   "rules": {
+    "WB-01": {
+     "status": "pass",
+     "low_confidence": false,
+     "value": 0.129,
+     "threshold": -0.17,
+     "reason": "hip 0.13 L below knee at the bottom"
+    },
+    "WB-04": {
+     "status": "pass",
+     "low_confidence": false,
+     "value": 0.0,
+     "threshold": 0.6,
+     "reason": "both hands on the ball at release"
+    },
+    "WB-05": {
+     "status": "not_assessable",
+     "low_confidence": false,
+     "value": null,
+     "threshold": null,
+     "reason": "ball isn't tracked by body pose (see Part 2)"
+    }
+   },
+   "verdict": "proper",
+   "failed": [],
+   "unsure": []
+  },
+  {
+   "n": 5,
+   "start": 254,
+   "bottom": 285,
+   "release": 310,
+   "end": 314,
+   "t_bottom": 9.5,
+   "rules": {
+    "WB-01": {
+     "status": "pass",
+     "low_confidence": false,
+     "value": 0.129,
+     "threshold": -0.17,
+     "reason": "hip 0.13 L below knee at the bottom"
+    },
+    "WB-04": {
+     "status": "pass",
+     "low_confidence": false,
+     "value": 0.0,
+     "threshold": 0.6,
+     "reason": "both hands on the ball at release"
+    },
+    "WB-05": {
+     "status": "not_assessable",
+     "low_confidence": false,
+     "value": null,
+     "threshold": null,
+     "reason": "ball isn't tracked by body pose (see Part 2)"
+    }
+   },
+   "verdict": "proper",
+   "failed": [],
+   "unsure": []
+  },
+  {
+   "n": 6,
+   "start": 314,
+   "bottom": 345,
+   "release": 370,
+   "end": 374,
+   "t_bottom": 11.5,
+   "rules": {
+    "WB-01": {
+     "status": "pass",
+     "low_confidence": false,
+     "value": 0.129,
+     "threshold": -0.17,
+     "reason": "hip 0.13 L below knee at the bottom"
+    },
+    "WB-04": {
+     "status": "not_assessable",
+     "low_confidence": false,
+     "value": null,
+     "threshold": null,
+     "reason": "a wrist is hidden at release"
+    },
+    "WB-05": {
+     "status": "not_assessable",
+     "low_confidence": false,
+     "value": null,
+     "threshold": null,
+     "reason": "ball isn't tracked by body pose (see Part 2)"
+    }
+   },
+   "verdict": "proper",
+   "failed": [],
+   "unsure": []
+  },
+  {
+   "n": 7,
+   "start": 374,
+   "bottom": 405,
+   "release": 430,
+   "end": 434,
+   "t_bottom": 13.5,
+   "rules": {
+    "WB-01": {
+     "status": "pass",
+     "low_confidence": false,
+     "value": -0.052,
+     "threshold": -0.17,
+     "reason": "hip 0.05 L above knee at the bottom"
+    },
+    "WB-04": {
+     "status": "pass",
+     "low_confidence": false,
+     "value": 0.0,
+     "threshold": 0.6,
+     "reason": "both hands on the ball at release"
+    },
+    "WB-05": {
+     "status": "not_assessable",
+     "low_confidence": false,
+     "value": null,
+     "threshold": null,
+     "reason": "ball isn't tracked by body pose (see Part 2)"
+    }
+   },
+   "verdict": "proper",
+   "failed": [],
+   "unsure": []
+  }
+ ],
+ "ignored_dips": [],
+ "summary": {
+  "total": 7,
+  "proper": 6,
+  "not_proper": 1,
+  "uncertain": 0,
+  "fault_counts": {
+   "WB-01": 1
+  },
+  "most_common_fault": "WB-01",
+  "cycle_times": [
+   2.0,
+   2.0,
+   2.0,
+   2.0,
+   2.0,
+   2.0
+  ],
+  "tempo_thirds": [
+   2.0,
+   2.0,
+   2.0
+  ],
+  "depth_thirds": [
+   0.13,
+   -0.09,
+   0.07
+  ],
+  "pauses": 0,
+  "rest_s": 0,
+  "takeaways": [
+   "1 of 7 reps failed WB-01 (Squat depth (hips below knees)). Sit deeper: hip crease clearly below the top of the knee before you drive up."
+  ]
+ },
+ "warnings": [
+  "WB-04 Two-handed throw: not assessable on 1/7 reps (a wrist is hidden at release).",
+  "WB-05 Ball strikes the target: not assessable on 7/7 reps (ball isn't tracked by body pose (see Part 2))."
+ ]
+}

@@ -1,0 +1,118 @@
+# Every threshold of the wall-ball form check lives in this file.
+#
+# Units: L = the athlete's leg length in pixels (hip->knee + knee->ankle), measured per rep,
+# so thresholds don't depend on camera distance. Angles in degrees, times in seconds.
+# Primary source: HYROX Singles Rulebook 2025/26 R1, section 9.8 Wall Balls, pp.26-27.
+
+camera_roll_deg: 0        # calibration for a crooked clip: rotates keypoints (positive = clockwise on screen)
+
+view:
+  side_max_ratio: 0.5     # shoulder width / torso length below this = side-on (front-on adult ~0.8, side-on ~0.1-0.3)
+
+segmentation:
+  min_prominence: 0.15    # hip must drop >= 0.15 L to count as a squat. Full squat drops ~0.5-0.7 L; 0.15 still catches shallow no-reps
+  min_rep_s: 0.8          # bottoms closer than this are one squat. Race-pace cycles are ~1.5-2.5 s
+
+rules:
+  WB-01:
+    name: Squat depth (hips below knees)
+    source: "Rulebook 9.8 p.26: 'the racer's hips must descend lower than their knees (also known as; below parallel or below 90 deg)'"
+    rationale: >
+      MediaPipe's hip point is the hip-joint centre (above the hip crease) and its knee point is the knee-joint
+      centre (below the top of the knee). Joint centre below joint centre is stricter than a judge's crease-below-knee,
+      so a negative margin is allowed. Calibrated 2026-11-21 on CrossFit's official wall-ball standard video
+      (clips/C1_side_studio.mp4, reps legal by definition, thighs ~parallel at the bottom): joint-centre depth
+      -0.10 to -0.15 L on all 9 reps. A clearly deep athlete (C1b) measures +0.09 to +0.18 L. Threshold -0.17 L
+      keeps every reference rep legal. The borderline is one-sided: a rep missing by under 0.03 L (-0.20..-0.17) is
+      "can't judge", not a no-rep. It used to be +/-0.03, which flagged a legal reference rep (C1 rep 8, -0.146)
+      as can't-judge: the margin is already built into -0.17, so passes aren't second-guessed.
+      First guess was -0.03 (failed all 9 legal reps).
+      Front-on or from behind the thigh points along the camera axis, so hip-vs-knee can't be measured (MediaPipe's
+      3D estimate from behind was tried: it reads the same legal reps 0.33 L too deep, so it isn't used).
+      From those views the "front" params below apply instead: hip drop = hip height above ankles at the bottom /
+      standing hip height. Calibrated 2026-11-22 on the same CrossFit athlete filmed both ways: side-on 0.33-0.38
+      (legal, thighs ~parallel), from behind 0.23-0.25 (perspective makes it look deeper). Other back clips: 0.17-0.24.
+      Because of that bias it can only confirm a clearly deep rep (<= max_drop - borderline); anything else is
+      "can't judge", never a no-rep. ponytail: calibrated on one athlete filmed both ways; re-check with own clips.
+    tip: "Sit deeper: hip crease clearly below the top of the knee before you drive up."
+    required: true
+    views: [side, front]
+    params:
+      min_depth_ratio: -0.17     # pass if (hip_y - knee_y) / L >= this
+      borderline: 0.03           # missing the threshold by less than this -> low confidence (can't judge, not a no-rep)
+      bottom_window_frames: 3    # deepest point taken over +/- this many frames around the bottom
+      min_visibility: 0.6
+      front:                     # front / behind view: hip-drop estimate, can pass, never fails
+        max_drop: 0.30           # clear pass if bottom hip height <= 0.30 - 0.03 of standing hip height
+        borderline: 0.03
+        stand_window_frames: 15  # standing height = 95th percentile of hip height from 15 frames before the rep
+        bottom_window_frames: 3
+
+  WB-02:
+    name: Start standing tall
+    source: "Rulebook 9.8 p.26: 'The racer must start by standing tall (hips and knees extended), holding the wall ball with both hands'"
+    rationale: >
+      Full extension is ~175-180 deg; pose jitter is +/-5-10 deg, so 160 deg separates upright from a quarter squat.
+      0.2 s rules out a single noisy frame. Checked before rep 1 only.
+    tip: "Start each set fully upright, hips and knees locked out, before the first squat."
+    required: true
+    views: [side, front]
+    params: { min_angle: 160, min_hold_s: 0.2 }
+
+  WB-03:
+    name: Reset after picking up the ball
+    source: "Rulebook 9.8 p.26: not permitted to pick the ball up from the ground and immediately throw; after a drop, stand tall before the squat"
+    rationale: >
+      A floor pick-up shows as both wrists below the knees. After it, the same stand-tall hold as WB-02 must
+      appear before the next squat bottom. Applies only to reps that follow a pick-up.
+    tip: "After a drop, pick the ball up and stand all the way up before the next squat."
+    required: true
+    views: [side, front]
+    params: { min_angle: 160, min_hold_s: 0.2 }
+
+  WB-04:
+    name: Two-handed throw
+    source: "Rulebook 9.8 p.26: 'throws the ball (with both hands)'"
+    rationale: >
+      At release (highest wrist point) both wrists must be above the nose and close together. A ball is ~35 cm across
+      and L is ~85 cm, so hands on the ball are ~0.4 L apart; 0.6 L leaves margin. Side-on the far wrist is hidden
+      on practically every rep (9/9 on C1 and C1b), so this rule is not required: a visible, confident fail still
+      makes the rep a no-rep, but a hidden wrist doesn't make the rep uncertain. It's reported in the warnings.
+    tip: "Keep both hands on the ball through the throw."
+    required: false
+    views: [side, front]
+    params: { max_wrist_gap: 0.6, min_visibility: 0.5 }
+
+  WB-05:
+    name: Ball reaches the target
+    source: "Rulebook 9.8 pp.26-27: throw must strike the target; 3.00 m men / 2.70 m women"
+    rationale: >
+      The ball is tracked from the video (pipeline/ball.py) and its peak height measured in metres. Pixels become
+      metres with the ball's own diameter (the measuring ruler); gravity (the curvature of its flight) checks it.
+      Agree within ruler_tolerance or "can't judge"; more than half that apart = too close to call. (Averaging
+      the two was tried and leaked the gravity fit's noise into the height: a 3.0 m throw read 2.71 m.) Checked on C1b (side-on
+      gym, men's 3 m target): rulers agree within 13-18%, peaks 2.98-3.17 m. Assumption: "target height" is the line
+      the ball's top must reach (the rulebook gives heights, not the target's size). Side-on only: from the front or
+      behind the target is at a different distance from the camera than the athlete's feet. Height is checked, not
+      left/right aim, and a digital target registers the hit anyway. Not required: a confident miss is a no-rep, an
+      untracked throw doesn't make the rep uncertain.
+    tip: "Drive the ball higher: finish the hip extension before the arms push."
+    required: false
+    views: [side]
+    params:
+      target_height_m: 3.00       # men / men pro; set 2.70 for women / women pro
+      ball_diameter_m: 0.35       # 14-inch wall ball; the size ruler
+      ankle_height_m: 0.08        # ankle joint above the floor
+      ruler_tolerance: 0.25       # size and gravity rulers must agree within 25%
+      min_points: 6               # frames the ball must actually be seen in flight
+      borderline_m: 0.15          # within this of the target height -> low confidence
+
+summary:
+  pause_s: 3.0          # a gap between rep bottoms is a break only if longer than this
+  pause_ratio: 1.5      # ...and longer than 1.5x the athlete's own median rep time (a slow, steady set is not a broken one)
+  station_reps: 100     # HYROX wall-ball station: 100 reps (all divisions)
+  depth_creep_L: 0.05   # side-on depth worse by >= 5% of leg length, first third vs last -> "getting shallower"
+  close_call_L: 0.06    # shallowest passing rep within 6% of leg length of the standard -> "only just made depth"
+  depth_spread_L: 0.08  # deepest minus shallowest passing rep >= 8% of leg length -> "depth varied"
+  fade_ratio: 2.0       # last-third shallow reps >= 2x first third -> "depth faded"
+  slowdown_ratio: 1.15  # last-third pace >= 15% slower than first third -> "pace slowed"

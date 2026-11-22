@@ -1,0 +1,23 @@
+# Python / Node
+.venv/
+__pycache__/
+*.pyc
+node_modules/
+dist/
+
+# Local data
+backend/db.sqlite3
+backend/models/
+
+# Uploaded videos stay local; the cached analysis (keypoints, ball track, verdicts) is kept so
+# eval/evaluate.ts and eval/shallow_sweep.py run without re-uploading the clips.
+backend/media/videos/*/*.mp4
+
+# Test clips: YouTube footage must not be redistributed (see clips/clips.md for sources)
+clips/raw/
+clips/*.mp4
+
+# Editor / tool state
+.vscode/
+.idea/
+design/*.bak
