@@ -1,7 +1,9 @@
 # Part 2: adding IMU and EMG to the wall-ball form check
 
-Worked example: the HYROX Wall Ball station built in Part 1. Numbers marked *(Part 1)* are measured on our 7 test clips
-(48 reps); everything else is from the cited literature or is labelled as my assumption.
+Worked example: Wall Balls, the one required station and the only one built in Part 1 (Sandbag Lunges and Burpee
+Broad Jumps were the optional stretch goal). Numbers marked *(Part 1)* are measured on our clips: 7 web clips (48
+reps) plus 4 filmed squat-depth clips (11 reps). Everything else is from the cited literature or labelled as my
+assumption.
 
 ## 1. What computer vision could not see, and the sensor that fixes it
 
@@ -45,6 +47,9 @@ Worked example: the HYROX Wall Ball station built in Part 1. Numbers marked *(Pa
 **Minimum: 3 IMUs (1 thigh + 2 wrists).** That fixes every verdict gap in section 1. A second thigh IMU adds
 asymmetry, and **one** EMG channel on the quad adds the fatigue trend. EMG is coaching value only. I would not let it
 decide a rep.
+
+*Not built, for comparison:* in Sandbag Lunges the key no-rep is the back knee not touching the floor, which the front
+leg often hides from one camera. A thigh + shin IMU on each leg would measure that directly.
 
 ## 4. Fusion approach
 

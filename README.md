@@ -15,7 +15,7 @@ ball up and went straight into the squat without standing tall (WB-03).*
 | Doc | What's in it |
 |---|---|
 | This README | How to run it, how it works, results, failures, limits |
-| [`docs/part2_imu_emg.md`](docs/part2_imu_emg.md) | **Part 2:** which camera gaps IMU and EMG close, and how to fuse them |
+| [**Part 2 research note (PDF)**](docs/Part2_IMU_EMG_Research_Note.pdf) | **Part 2:** which camera gaps IMU and EMG close, and how to fuse them (2 pages; Markdown source in [`docs/part2_imu_emg.md`](docs/part2_imu_emg.md)) |
 | [`PRD.md`](PRD.md) | The plan of record: requirements, data contracts, design decisions |
 | [`RESEARCH.md`](RESEARCH.md) | Papers reviewed, ranked improvement plan, Kalman ball-tracker results |
 | [`clips/clips.md`](clips/clips.md) | Where each test clip comes from and what it tests |
