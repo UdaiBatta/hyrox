@@ -321,7 +321,7 @@ On the short web clips the app reports faults, close calls, coverage and project
    `eval/depth_labels.csv` and run `depth_evaluate.py`. Reserve a separate athlete or recording for the final
    accuracy check before changing the threshold again.
 2. A/B MediaPipe vs RTMPose on the labelled reps (far-side accuracy).
-3. SAM 2 for ball segmentation; GVHMR for a world-grounded 3D body (RESEARCH.md §2).
+3. **Better ball tracking:** SAM 2 for ball segmentation (RESEARCH.md §2).
 4. Evaluate whether a strictness setting helps after collecting independent labels.
 5. Part 2 sensors: thigh and wrist IMUs first ([`docs/part2_imu_emg.md`](docs/part2_imu_emg.md)).
 6. **More stations: Sandbag Lunges, then Burpee Broad Jumps** (the brief's stretch goal, left out on purpose so one
@@ -342,6 +342,46 @@ On the short web clips the app reports faults, close calls, coverage and project
 
    - **Clips:** 2–3 clips per station, as for Wall Balls, including visibly bad reps (knee not touching, a step
      instead of a jump), labelled with `eval/` like the depth set.
+7. **Real time** (the brief allowed recorded video only).
+   - **Pose:** MediaPipe's live-stream mode, or MediaPipe in the browser (`@mediapipe/tasks-vision`), so a phone
+     can judge without a server.
+   - **What has to change:** the pipeline currently looks at the whole clip at once:
+     - smoothing windows look both ways in time;
+     - squat bottoms are found over the whole signal;
+     - the ball path is smoothed backwards after the flight.
+
+     Real time needs one-sided versions of each: a causal filter such as a One-Euro filter, a bottom confirmed
+     about 0.3–0.5 s after it happens, and the Kalman filter without the backward pass.
+   - **Target:** each verdict on screen within about 1 s of the catch.
+   - **Trade-off:** some accuracy is lost, so the offline and real-time versions get scored on the same labels
+     before switching.
+8. **Several stations and athletes at once.**
+   - **Station detection:** recognise the station from its movement signature: a squat followed by wrists overhead
+     for wall balls, alternating knee dips for lunges, floor contact plus forward travel for burpee broad jumps.
+     Each rep then goes to that station's `rules.yaml` block, so one video of a whole race can be judged
+     station by station.
+   - **More than one athlete:** track several people (MediaPipe `num_poses` > 1, currently 1) and keep each
+     person's identity across frames. Race footage needs this (limit 8 above).
+   - **Several cameras:** replace the single background thread with a job queue, one worker per video stream.
+9. **Faster processing.**
+   - **Today:** 69 s for the 36 s full CrossFit video on this laptop's CPU, about 1.9× the video's length, with
+     the heavy pose model.
+   - **Next:**
+     - decode the video once and share the frames between the pose and ball passes (the ball pass re-reads the
+       video today);
+     - run MediaPipe on the GPU;
+     - process long videos in overlapping chunks in parallel;
+     - try the lighter pose models, kept only if the depth evaluation doesn't get worse.
+10. **Better 3D skeleton.**
+    - **Today:** the 3D view is lifted from 2D points with bone lengths and movement rules. Hidden joints are
+      estimated, and it's for display only.
+    - **Next:**
+      - **World-grounded body models** (GVHMR, WHAM): a full 3D body with real contact with the floor. Licences
+        need checking before any product use.
+      - **Two cameras** (two phones, side-on and behind): triangulate real 3D joints. This also fixes depth from
+        behind, using the same syncing method as Part 2.
+      - **IMU fusion:** thigh and shin orientation pins down joints the camera can't see.
+    - **Rules:** 3D estimates become rule evidence only after they're validated against labelled reps.
 
 ## Repo layout
 ```
