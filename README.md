@@ -20,6 +20,16 @@ ball up and went straight into the squat without standing tall (WB-03).*
 | [`RESEARCH.md`](RESEARCH.md) | Papers reviewed, ranked improvement plan, Kalman ball-tracker results |
 | [`clips/clips.md`](clips/clips.md) | Where each test clip comes from and what it tests |
 
+### At a glance
+- **Station:** Wall Balls, the one required station. Five rules from the 26/27 rulebook, all in one config file.
+- **Rep counting:** matches hand counts on 6 of 7 web clips (49 hand-counted reps, 1 missed, 0 extra).
+- **Verdicts vs hand labels:** 45 of 45 decided reps agree, and both real no-reps are caught by the right rule
+  (pick-up faults). The app abstains ("can't judge") on 3 reps.
+- **Biggest weakness, shown below:** on filmed shallow squats, depth got a confident no-rep on only 1 of 5. The
+  other 4 were "can't judge", because the knee wasn't reliably tracked.
+- **Honest by design:** from behind, depth can be confirmed but never failed, and every unjudgeable rule says why.
+- **Part 2:** thigh and wrist IMUs close the depth, two-hand and target gaps (2-page PDF).
+
 ---
 
 ## Windows setup
@@ -247,6 +257,12 @@ fail and the six C2a coach reps pass. The sweep measures sensitivity to modifyin
 ## Failures and honest limits
 
 1. **Shallow-rep coverage is low.** WB-01 made a confident depth call on one of the five filmed shallow reps.
+
+   ![A labelled shallow squat ("Bad Example - Hips not going below") that the app could only call "can't judge"](docs/img/failure_shallow_cant_judge.png)
+   *Failure case (C2c, CrossFit Open 12.4). The source labels these squats as too shallow, but the app says "can't
+   judge" on all four: the close-up crops the legs and the caption covers the ankles, so the knee is never tracked
+   reliably. It abstains instead of passing a bad rep, but it doesn't catch it. The ball ring is also off the ball
+   here (scale rulers disagree 2.1×), and the 3D view has no legs to draw.*
 2. **Borderline calls need further validation.** One of two visually borderline reps was confidently failed.
    Independent labels on another full-body set would help determine how often this happens.
 3. **One labeller (the author), from stills.** No second labeller, so there's no human-vs-human ceiling. 49 reps
@@ -382,6 +398,21 @@ On the short web clips the app reports faults, close calls, coverage and project
         behind, using the same syncing method as Part 2.
       - **IMU fusion:** thigh and shin orientation pins down joints the camera can't see.
     - **Rules:** 3D estimates become rule evidence only after they're validated against labelled reps.
+11. **Per-athlete depth calibration.** Film one squat a coach confirms is exactly parallel. Use it to measure where
+    MediaPipe puts this athlete's hip and knee, then adjust WB-01's margin for them. The filmed depth test shows the
+    offset varies between athletes.
+12. **Judge-assist review queue.** Every "can't judge" or borderline rep becomes a short slow-motion clip a coach can
+    mark as rep or no-rep in one click. Those answers become new labels for `eval/`, so the thresholds improve with
+    use.
+13. **Progress across sessions.** Save each set's summary per athlete and track depth margin, tempo, no-rep rate and
+    fatigue drop-off over weeks, not just within one set.
+14. **Pacing plan.** Turn the measured tempo decay and break cost into a race plan, such as "sets of 15 with 5 s
+    breaks finishes 100 reps fastest for you", and check it against the next session.
+15. **Recording check before filming.** A live framing check on the phone: whole body and feet in frame, side-on,
+    target visible, enough light. Most "can't judge" answers come from framing, so this prevents them at the
+    source.
+16. **Privacy and on-device processing.** Run pose tracking on the phone so the video never leaves it, with clear
+    retention rules for anything uploaded. That matters for a wearable product handling body data.
 
 ## Repo layout
 ```
