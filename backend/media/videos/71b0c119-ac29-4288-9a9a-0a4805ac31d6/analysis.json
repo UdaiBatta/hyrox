@@ -9,6 +9,7 @@
    "bottom": 5,
    "release": 26,
    "end": 32,
+   "view": "front",
    "t_bottom": 0.167,
    "rules": {
     "WB-01": {
@@ -62,6 +63,7 @@
    "bottom": 61,
    "release": 82,
    "end": 84,
+   "view": "front",
    "t_bottom": 2.033,
    "rules": {
     "WB-01": {
@@ -98,6 +100,7 @@
    "bottom": 117,
    "release": 138,
    "end": 153,
+   "view": "front",
    "t_bottom": 3.9,
    "rules": {
     "WB-01": {
@@ -134,6 +137,7 @@
    "bottom": 173,
    "release": 195,
    "end": 209,
+   "view": "front",
    "t_bottom": 5.767,
    "rules": {
     "WB-01": {
@@ -170,6 +174,7 @@
    "bottom": 228,
    "release": 249,
    "end": 263,
+   "view": "front",
    "t_bottom": 7.6,
    "rules": {
     "WB-01": {
@@ -206,6 +211,7 @@
    "bottom": 284,
    "release": 304,
    "end": 303,
+   "view": "front",
    "t_bottom": 9.467,
    "rules": {
     "WB-01": {
@@ -242,6 +248,7 @@
    "bottom": 340,
    "release": 360,
    "end": 361,
+   "view": "front",
    "t_bottom": 11.333,
    "rules": {
     "WB-01": {
@@ -278,6 +285,7 @@
    "bottom": 396,
    "release": 419,
    "end": 418,
+   "view": "front",
    "t_bottom": 13.2,
    "rules": {
     "WB-01": {
@@ -314,6 +322,7 @@
    "bottom": 436,
    "release": 458,
    "end": 459,
+   "view": "front",
    "t_bottom": 14.533,
    "rules": {
     "WB-01": {
@@ -350,6 +359,7 @@
    "bottom": 492,
    "release": 513,
    "end": 515,
+   "view": "front",
    "t_bottom": 16.4,
    "rules": {
     "WB-01": {
@@ -386,6 +396,7 @@
    "bottom": 550,
    "release": 571,
    "end": 579,
+   "view": "front",
    "t_bottom": 18.333,
    "rules": {
     "WB-01": {
@@ -422,6 +433,7 @@
    "bottom": 605,
    "release": 627,
    "end": 641,
+   "view": "front",
    "t_bottom": 20.167,
    "rules": {
     "WB-01": {

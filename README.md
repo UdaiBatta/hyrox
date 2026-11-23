@@ -114,7 +114,7 @@ uv run --project backend --no-sync python eval/depth_evaluate.py
 video ─► normalise (ffmpeg: rotation, constant fps)
       ─► MediaPipe Pose Landmarker heavy, every frame (33 points + visibility)        cached
       ─► clean: bridge gaps ≤ 0.2 s, Savitzky–Golay smoothing (~0.15 s)
-      ─► view: side-on vs front/back, from shoulder width ÷ torso length
+      ─► view: side-on vs front/back, from shoulder width ÷ torso length, per rep at the bottom (edited videos cut between angles)
       ─► reps: squat bottoms = hip-height peaks; a rep needs a throw after it (wrists above the nose)
       ─► ball: Hough circle at the hands, then a gravity Kalman filter + RTS smoother in flight   cached
       ─► rules WB-01…05 per rep ─► verdict ─► summary + warnings ─► analysis.json

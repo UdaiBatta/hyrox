@@ -86,8 +86,10 @@ def summarize(reps, fps, cfg):
 
 def warnings(B, reps, view, cfg):
     out = []
-    if view != "side":
-        out.append("Filmed from the front or behind: hip and knee line up with the camera, so squat depth (WB-01) is "
+    behind = sum(r.get("view", view) != "side" for r in reps)
+    if view != "side" or behind:
+        who = "Filmed" if behind in (0, len(reps)) else f"{behind} of {len(reps)} reps were filmed"
+        out.append(f"{who} from the front or behind: hip and knee line up with the camera, so squat depth (WB-01) is "
                    "estimated from how far the hip drops. It can confirm clearly deep reps but can't call a no-rep. "
                    "Film side-on to judge depth properly.")
     weak = float(np.mean(B["quality"] < 0.5))

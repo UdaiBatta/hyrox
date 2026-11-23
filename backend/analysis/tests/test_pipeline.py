@@ -90,6 +90,20 @@ class PipelineTest(unittest.TestCase):
         self.assertEqual(res["view"], "front")
         self.assertEqual(res["reps"][0]["rules"]["WB-01"]["status"], "not_assessable")
 
+    def test_camera_cut_mid_clip_judges_each_rep_from_its_own_view(self):
+        """Edited videos cut between side-on and behind; side-on depth maths on a rear-view rep is meaningless."""
+        import copy
+        data = synthetic([1, 1, 1, 1])
+        start_rep3 = int(0.5 * FPS) + 2 * 2 * FPS
+        for f in data["frames"][start_rep3:]:
+            f["kp"] = copy.deepcopy(f["kp"])
+            f["kp"][11][0], f["kp"][12][0] = 350, 650                 # shoulders now wide: filmed from behind
+        res = analyze(data, load_config())
+        self.assertEqual([r["view"] for r in res["reps"]], ["side", "side", "front", "front"])
+        for r in res["reps"][2:]:
+            self.assertNotIn("knee at the bottom", r["rules"]["WB-01"]["reason"])
+        self.assertTrue(any(w.startswith("2 of 4 reps were filmed from the front or behind") for w in res["warnings"]))
+
     def test_counts_reps_and_flags_the_shallow_one(self):
         res = analyze(synthetic([1, 1, 0.5, 1, 1]), load_config())
         self.assertEqual(res["view"], "side")

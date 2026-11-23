@@ -119,11 +119,12 @@ def body(P):
     return B
 
 
-def view(B, side_max_ratio):
-    """'side' or 'front' from shoulder width / torso length (front-on adult ~0.8, side-on ~0.1-0.3)."""
-    P = B["P"]
-    r = _dist(P[:, L_SH], P[:, R_SH]) / _dist(B["shoulder"], B["hip"])
-    r = r[np.isfinite(r) & (B["quality"] > 0.5)]
+def view(B, side_max_ratio, a=0, b=None):
+    """'side' or 'front' from shoulder width / torso length (front-on adult ~0.8, side-on ~0.1-0.3), over frames
+    [a, b). Called per rep as well as per clip, because edited videos cut between camera angles."""
+    P = B["P"][a:b]
+    r = _dist(P[:, L_SH], P[:, R_SH]) / _dist(B["shoulder"][a:b], B["hip"][a:b])
+    r = r[np.isfinite(r) & (B["quality"][a:b] > 0.5)]
     if not len(r):
         return "unknown"
     return "side" if np.median(r) < side_max_ratio else "front"

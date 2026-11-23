@@ -9,6 +9,7 @@
    "bottom": 55,
    "release": 106,
    "end": 81,
+   "view": "front",
    "t_bottom": 2.292,
    "rules": {
     "WB-01": {
@@ -53,6 +54,7 @@
    "bottom": 136,
    "release": 165,
    "end": 161,
+   "view": "front",
    "t_bottom": 5.667,
    "rules": {
     "WB-01": {
@@ -89,6 +91,7 @@
    "bottom": 215,
    "release": 244,
    "end": 238,
+   "view": "front",
    "t_bottom": 8.958,
    "rules": {
     "WB-01": {
@@ -125,6 +128,7 @@
    "bottom": 292,
    "release": 321,
    "end": 316,
+   "view": "front",
    "t_bottom": 12.167,
    "rules": {
     "WB-01": {

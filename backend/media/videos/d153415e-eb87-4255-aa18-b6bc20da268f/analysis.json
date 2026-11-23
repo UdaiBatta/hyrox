@@ -9,6 +9,7 @@
    "bottom": 18,
    "release": 38,
    "end": 32,
+   "view": "front",
    "t_bottom": 0.75,
    "rules": {
     "WB-01": {
@@ -62,6 +63,7 @@
    "bottom": 62,
    "release": 83,
    "end": 76,
+   "view": "front",
    "t_bottom": 2.583,
    "rules": {
     "WB-01": {
@@ -98,6 +100,7 @@
    "bottom": 107,
    "release": 125,
    "end": 118,
+   "view": "front",
    "t_bottom": 4.458,
    "rules": {
     "WB-01": {
@@ -134,6 +137,7 @@
    "bottom": 148,
    "release": 169,
    "end": 162,
+   "view": "front",
    "t_bottom": 6.167,
    "rules": {
     "WB-01": {
@@ -170,6 +174,7 @@
    "bottom": 192,
    "release": 213,
    "end": 206,
+   "view": "front",
    "t_bottom": 8.0,
    "rules": {
     "WB-01": {

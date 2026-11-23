@@ -43,6 +43,12 @@ def analyze(data, cfg, flights=None, track=None):
                               + np.cos(roll) * (y - data["height"] / 2) + data["height"] / 2)
     view = signals.view(B, cfg["view"]["side_max_ratio"])
     reps, dips = signals.segment(B, fps, cfg["segmentation"])
+    # Per rep, from the frames around the bottom (where depth is judged): an edited video can cut between side-on and
+    # behind, even in the middle of a rep.
+    half = max(1, int(0.4 * fps))
+    for r in reps:
+        rv = signals.view(B, cfg["view"]["side_max_ratio"], max(0, r["bottom"] - half), r["bottom"] + half + 1)
+        r["view"] = view if rv == "unknown" else rv
     reps = rules.judge(B, reps, view, fps, cfg["rules"], {f["release"]: f for f in flights or []})
     skipped = [f"Not counted at {d['frame'] / fps:.1f} s: {d['reason']}." for d in dips]
     return {"view": view, "fps": fps, "n_frames": data["n_frames"], "reps": reps, "ignored_dips": dips,

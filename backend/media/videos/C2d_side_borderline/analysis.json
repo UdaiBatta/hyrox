@@ -9,6 +9,7 @@
    "bottom": 45,
    "release": 68,
    "end": 65,
+   "view": "side",
    "t_bottom": 1.5,
    "rules": {
     "WB-01": {
@@ -52,6 +53,7 @@
    "bottom": 116,
    "release": 133,
    "end": 158,
+   "view": "side",
    "t_bottom": 3.867,
    "rules": {
     "WB-01": {

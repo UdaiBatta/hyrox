@@ -9,6 +9,7 @@
    "bottom": 103,
    "release": 124,
    "end": 123,
+   "view": "side",
    "t_bottom": 3.433,
    "rules": {
     "WB-01": {
@@ -59,6 +60,7 @@
    "bottom": 162,
    "release": 182,
    "end": 182,
+   "view": "side",
    "t_bottom": 5.4,
    "rules": {
     "WB-01": {
@@ -93,6 +95,7 @@
    "bottom": 218,
    "release": 239,
    "end": 237,
+   "view": "side",
    "t_bottom": 7.267,
    "rules": {
     "WB-01": {
@@ -127,6 +130,7 @@
    "bottom": 274,
    "release": 295,
    "end": 294,
+   "view": "side",
    "t_bottom": 9.133,
    "rules": {
     "WB-01": {
@@ -161,6 +165,7 @@
    "bottom": 331,
    "release": 352,
    "end": 351,
+   "view": "side",
    "t_bottom": 11.033,
    "rules": {
     "WB-01": {
@@ -195,6 +200,7 @@
    "bottom": 387,
    "release": 409,
    "end": 409,
+   "view": "side",
    "t_bottom": 12.9,
    "rules": {
     "WB-01": {

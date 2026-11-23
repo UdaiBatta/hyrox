@@ -190,11 +190,12 @@ def judge(B, reps, view, fps, cfg, ball=None):
         lengths = leg[rep["start"]:rep["end"] + 1]
         lengths = lengths[lengths > 0]
         L = np.median(lengths) if lengths.size else np.nan
-        ctx = {"n": n, "fps": fps, "L": L, "prev_release": prev_release, "view": view, "ball": ball}
+        rv = rep.get("view", view)
+        ctx = {"n": n, "fps": fps, "L": L, "prev_release": prev_release, "view": rv, "ball": ball}
         results = {}
         for rid, fn in RULES.items():
             p = cfg[rid]
-            res = fn(B, rep, ctx, p["params"]) if view in p["views"] else _na(f"not assessable from this view ({'front or behind' if view == 'front' else view})")
+            res = fn(B, rep, ctx, p["params"]) if rv in p["views"] else _na(f"not assessable from this view ({'front or behind' if rv == 'front' else rv})")
             if res is not None:
                 results[rid] = res
         v = verdict(results, cfg)

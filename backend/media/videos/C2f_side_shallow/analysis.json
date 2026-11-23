@@ -9,6 +9,7 @@
    "bottom": 16,
    "release": 34,
    "end": 26,
+   "view": "side",
    "t_bottom": 0.667,
    "rules": {
     "WB-01": {
