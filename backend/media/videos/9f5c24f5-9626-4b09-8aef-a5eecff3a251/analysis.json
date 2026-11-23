@@ -12,25 +12,23 @@
    "t_bottom": 2.292,
    "rules": {
     "WB-01": {
-     "status": "pass",
+     "status": "not_assessable",
      "low_confidence": false,
-     "value": 0.198,
-     "threshold": 0.3,
-     "reason": "estimated from the front or behind: hip dropped to 0.20 of standing height",
-     "cmp": "\u2264",
-     "unit": "\u00d7 standing"
+     "value": null,
+     "threshold": null,
+     "reason": "hip or ankle not tracked at the bottom"
     },
     "WB-02": {
-     "status": "pass",
+     "status": "not_assessable",
      "low_confidence": false,
-     "value": 1.667,
-     "threshold": 0.2,
-     "reason": "stood tall for 1.67 s before rep 1"
+     "value": null,
+     "threshold": null,
+     "reason": "the start position is hidden long enough to conceal a standing hold"
     },
     "WB-04": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.428,
+     "value": 0.477,
      "threshold": 0.6,
      "reason": "both hands on the ball at release"
     },
@@ -42,9 +40,12 @@
      "reason": "not assessable from this view (front or behind)"
     }
    },
-   "verdict": "proper",
+   "verdict": "uncertain",
    "failed": [],
-   "unsure": []
+   "unsure": [
+    "WB-01",
+    "WB-02"
+   ]
   },
   {
    "n": 2,
@@ -57,16 +58,16 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.238,
+     "value": 0.233,
      "threshold": 0.3,
-     "reason": "estimated from the front or behind: hip dropped to 0.24 of standing height",
+     "reason": "estimated from the front or behind: hip dropped to 0.23 of standing height",
      "cmp": "\u2264",
      "unit": "\u00d7 standing"
     },
     "WB-04": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.352,
+     "value": 0.338,
      "threshold": 0.6,
      "reason": "both hands on the ball at release"
     },
@@ -93,7 +94,7 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.243,
+     "value": 0.236,
      "threshold": 0.3,
      "reason": "estimated from the front or behind: hip dropped to 0.24 of standing height",
      "cmp": "\u2264",
@@ -102,7 +103,7 @@
     "WB-04": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.322,
+     "value": 0.31,
      "threshold": 0.6,
      "reason": "both hands on the ball at release"
     },
@@ -129,16 +130,16 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.228,
+     "value": 0.218,
      "threshold": 0.3,
-     "reason": "estimated from the front or behind: hip dropped to 0.23 of standing height",
+     "reason": "estimated from the front or behind: hip dropped to 0.22 of standing height",
      "cmp": "\u2264",
      "unit": "\u00d7 standing"
     },
     "WB-04": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.406,
+     "value": 0.39,
      "threshold": 0.6,
      "reason": "both hands on the ball at release"
     },
@@ -163,9 +164,9 @@
  ],
  "summary": {
   "total": 4,
-  "proper": 4,
+  "proper": 3,
   "not_proper": 0,
-  "uncertain": 0,
+  "uncertain": 1,
   "fault_counts": {},
   "most_common_fault": null,
   "cycle_times": [
@@ -186,12 +187,13 @@
   "pauses": 0,
   "rest_s": 0,
   "takeaways": [
-   "All 4 reps met the standard.",
    "At 3.3 s/rep the 100-rep wall-ball station takes 5:29 unbroken."
   ]
  },
  "warnings": [
   "Filmed from the front or behind: hip and knee line up with the camera, so squat depth (WB-01) is estimated from how far the hip drops. It can confirm clearly deep reps but can't call a no-rep. Film side-on to judge depth properly.",
+  "WB-01 Squat depth (hips below knees): not assessable on 1/4 reps (hip or ankle not tracked at the bottom).",
+  "WB-02 Start standing tall: not assessable on 1/4 reps (the start position is hidden long enough to conceal a standing hold).",
   "WB-05 Ball reaches the target: not assessable on 4/4 reps (not assessable from this view (front or behind)).",
   "Not counted at 0.1 s: throw at the start of the clip; its squat happened before the clip began."
  ],

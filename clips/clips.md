@@ -24,7 +24,24 @@ Not used:
   `ffmpeg -vf crop=742:821:191:130` (left) or `crop=742:821:988:130` (right) if needed.
 - Race footage in the Jacob Price video: many athletes in frame (we assume one).
 
-**Still missing: a clip with clearly shallow (no-rep) squats filmed side-on.** None of the web footage shows
-deliberate shallow reps clearly enough. Record C2 yourself (PRD §5) for that.
+## Filmed squat-depth benchmark
 
-Labels for evaluation go in `../eval/labels/<clip>.csv` — label from 0.25× playback, not from the pipeline output.
+These four continuous excerpts test WB-01 alone. Times below are seconds from the beginning of each source. The
+first and last include an instructor beside the athlete, so the crop isolates the moving athlete. The full 36.5 s
+`raw/crossfit_full.mp4` supplies the C1 calibration and C4a rear-view clips above. Counting it again as an
+independent test would reuse the same movements.
+
+| Clip stem | Source | Start | Duration | Crop at 1280×720 | Depth label |
+|---|---|---:|---:|---|---|
+| C2c_side_shallow | [CrossFit Games, Open 12.4](https://www.youtube.com/watch?v=lMJYvetSHvk&t=91s) | 91.5 | 8.5 | `480:720:330:0` | Four throws in the source's explicitly labelled insufficient-depth sequence. The caption covers the ankles. |
+| C2d_side_borderline | [Hyrox Wall Ball Common Mistakes](https://www.youtube.com/watch?v=Y_7zAEzF96Y&t=65s) | 65.6 | 5.6 | Full frame | Two throws close to parallel. Visual review could not confidently resolve the crease against the knee. These are reviewer labels, without a second opinion. |
+| C2e_side_deep | [CrossFit Games, Open 12.4](https://www.youtube.com/watch?v=lMJYvetSHvk&t=100s) | 100.7 | 9.2 | Full frame | Four throws with clearly deep squats. The source demonstrates a separate ball-handling fault. Only depth is scored here. |
+| C2f_side_shallow | [CrossFit Games, Open 13.3](https://www.youtube.com/watch?v=cG9SWY4iqY0&t=92s) | 92.4 | 2.0 | `434:720:332:0` | The instructor identifies this throw as an insufficient-depth no-rep. The athlete and feet are visible. |
+
+From a local copy of each source, trim with `ffmpeg -ss START -t DURATION -i SOURCE.mp4 -vf crop=CROP -an -c:v libx264 -crf 18 clips/STEM.mp4`.
+Omit `-vf crop=CROP` for full-frame excerpts. Run `python -m analysis.pipeline ../clips/STEM.mp4` from `backend/`
+to regenerate the cached tracks. The source videos stay local.
+
+The per-rep times in [depth_labels.csv](../eval/depth_labels.csv) were recorded from the video before running the
+judge. To extend the test, label every completed throw in each new clip, including borderline cases, before viewing
+predictions. Have a second reviewer label the same original footage independently. Preserve disagreements for review.

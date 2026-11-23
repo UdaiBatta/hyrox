@@ -1,4 +1,4 @@
-"""Does WB-01 catch shallow squats on real footage? Our web clips have none, so make them: take each real side-on
+"""Controlled sensitivity test for WB-01: take each original side-on
 rep and raise the hips and everything above them so the rep reaches only `k` of its real depth (knees and feet stay
 where they were). Then run the unchanged pipeline and see when reps stop being found and when they become no-reps.
 
@@ -42,12 +42,6 @@ def shallow(data, reps, k):
     return d
 
 
-def thigh_deg(B, frame):
-    """Thigh angle below horizontal at a frame, from MediaPipe joint centres (negative = hip above knee)."""
-    h, kn = B["hip"][frame], B["knee"][frame]
-    return float(np.degrees(np.arcsin(np.clip((h[1] - kn[1]) / np.hypot(*(h[:2] - kn[:2])), -1, 1))))
-
-
 def main():
     cfg = load_config()
     thr = cfg["rules"]["WB-01"]["params"]["min_depth_ratio"]
@@ -71,12 +65,6 @@ def main():
             depth = np.median([x["value"] for x in w if x["value"] is not None]) if w else float("nan")
             print(f"{name:<5} {k:>4.1f}  {len(found):>2}/{len(reps):<2}  {fail:>8}       {unsure:>6}     "
                   f"{len(found) - fail - unsure:>3}   {depth:+.2f}")
-        from analysis.pipeline import signals
-        P = signals.clean(signals.to_array(data["frames"], data["n_frames"]), data["fps"], cfg["camera_roll_deg"],
-                          data["width"], data["height"])
-        angles = [thigh_deg(signals.body(P), r["bottom"]) for r in reps]
-        print(f"      real reps: thigh {min(angles):+.0f} to {max(angles):+.0f} deg vs horizontal by joint centres "
-              f"(+ = hip below knee)\n")
 
 
 if __name__ == "__main__":

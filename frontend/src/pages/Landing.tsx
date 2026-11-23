@@ -27,7 +27,7 @@ const STATS = [
 
 // How each rule is measured. Keep in sync with backend/analysis/rules.yaml.
 const MEASURE: Record<RuleId, string> = {
-  'WB-01': 'hip ≥ −0.17 leg lengths vs knee · side-on',
+  'WB-01': 'visible hip and knee at the squat bottom · side-on',
   'WB-02': 'hips + knees ≥ 160° for 0.2 s before rep 1',
   'WB-03': 'wrists below knees → stand tall again first',
   'WB-04': 'both wrists above nose, ≤ 0.6 leg lengths apart',

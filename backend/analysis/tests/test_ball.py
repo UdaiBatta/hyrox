@@ -61,7 +61,9 @@ class BallTrackTest(unittest.TestCase):
 class TargetHeightTest(unittest.TestCase):
     """WB-05 from a flight summary: 200 px/m by both rulers, ankles at y = 1000."""
     p = load_config()["rules"]["WB-05"]["params"]
-    B = {"ankle": np.c_[np.zeros(40), np.full(40, 1000.0)]}
+    observed = np.full((40, 33, 3), np.nan)
+    observed[:, 27] = [300, 1000, 1]
+    B = {"observed": observed}
     rep = {"release": 20}
 
     def judge(self, peak_y, g_ratio=1.0, peak_seen=True):
@@ -78,19 +80,24 @@ class TargetHeightTest(unittest.TestCase):
         self.assertTrue(self.judge(peak_y=1016 - (2.95 - 0.175) * 200)["low_confidence"], "5 cm short: too close")
         self.assertEqual(self.judge(peak_y=600, g_ratio=0.5)["status"], "not_assessable", "rulers disagree")
 
+    def test_hidden_floor_reference(self):
+        self.B = {"observed": np.full_like(self.observed, np.nan)}
+        self.assertEqual(self.judge(peak_y=600)["status"], "not_assessable")
+
 
 class TwoHandsEvidenceTest(unittest.TestCase):
     """WB-04 must only use wrists observed at release: a bridged (estimated) wrist is never evidence."""
     p = load_config()["rules"]["WB-04"]["params"]
 
-    def judge(self, seen_at_release):
-        n = 5
-        B = {"wrist_l": np.tile([100.0, 50, 0.9], (n, 1)), "wrist_r": np.tile([130.0, 50, 0.9], (n, 1)),
-             "nose": np.tile([115.0, 80, 0.9], (n, 1)), "seen": np.full((n, 33), 0.9)}
-        if not seen_at_release:
-            B["seen"][2] = np.nan                       # no pose in the video at release; cleaning bridged it
+    def judge(self, hidden=None):
+        observed = np.full((5, 33, 3), np.nan)
+        observed[:, [15, 16, 0]] = [[100, 50, .9], [130, 50, .9], [115, 80, .9]]
+        if hidden is not None:
+            observed[2, hidden] = np.nan
+        B = {"observed": observed}
         return rules.wb04_two_hands(B, {"release": 2}, {"L": 100.0}, self.p)["status"]
 
     def test_bridged_wrist_is_not_evidence(self):
-        self.assertEqual(self.judge(True), "pass")
-        self.assertEqual(self.judge(False), "not_assessable")
+        self.assertEqual(self.judge(), "pass")
+        self.assertEqual(self.judge(15), "not_assessable")
+        self.assertEqual(self.judge(0), "not_assessable")

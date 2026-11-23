@@ -1,86 +1,124 @@
-# Part 2: where IMU and EMG close the camera's gaps
+# Part 2: adding IMU and EMG to the wall-ball form check
 
-The prototype (Part 1) says **"not assessable from this view"** instead of guessing. Those answers are the
-shopping list for sensors. This note takes each gap we measured on our clips, names the sensor that fills it, and
-gives a fusion plan that could be built on top of the existing pipeline without changing how verdicts are made.
+Worked example: the HYROX Wall Ball station built in Part 1. Numbers marked *(Part 1)* are measured on our 7 test clips
+(48 reps); everything else is from the cited literature or is labelled as my assumption.
 
-## 1. The gaps, measured (from Part 1's output on 7 clips, 48 reps)
+## 1. What computer vision could not see, and the sensor that fixes it
 
-| Gap | What the camera does today | How often (our clips) |
+| Part 1 rule | What went wrong on video *(Part 1)* | Sensor that fixes it |
 |---|---|---|
-| **G1. Squat depth from the front or behind** (WB-01) | Hip and knee line up with the camera. A hip-drop estimate can confirm a clearly deep rep but **can never call a no-rep** | Every rep filmed from behind (21/21 on C4a/b/c) |
-| **G1b. Squat depth even side-on** (WB-01) | Where MediaPipe puts the hip point varies by athlete: two athletes at about parallel measure 20° apart in thigh angle, so one threshold lets a rep ~15–20° above parallel pass for some athletes (README, shallow-rep test) | All side-on athletes; size depends on the athlete |
-| **G2. Two-handed throw** (WB-04) | The far wrist is hidden at release side-on (and often from behind) | Not assessable on 27/27 side-on reps, 11/12 on C4b |
-| **G3. Ball reaches the target** (WB-05) | Needs the ball tracked through the flight, side-on only, plus two rulers that agree | Not assessable on 16/27 side-on reps and on every front/back rep |
-| **G4. Fatigue before it shows** | Video sees depth fade and slower tempo only *after* they happen | n/a (coaching) |
-| **G5. Hidden joints at the bottom of the squat** | Arms and the far leg are estimated, not seen (shown faded/dashed) | C4b: 255 frames with the right knee hidden |
+| **WB-01 depth, filmed from behind** | Hip and knee line up with the camera, so depth can only be *confirmed*, never failed. 20 of 21 rear-view reps were confirmed, 1 unassessable (ankles cropped), and none can ever be a no-rep | **Thigh IMU**: thigh angle against gravity is the same from any camera angle |
+| **WB-01 depth, side-on** | On the filmed shallow-squat test, only **1 of 5** shallow reps got a confident no-rep. The other 4 were "can't judge", because the knee was weakly observed in a close-up. One of 2 borderline reps was confidently failed | **Thigh IMU** again: it measures the thigh segment directly, with no occlusion. IMU knee-flexion error against optical motion capture in squats is reported under ~4–6° [8] |
+| **WB-04 two-handed throw** | The far wrist is hidden at release: judged on **0 of 27** side-on reps | **IMU on each wrist**: two hands on one ball push together, so both wrists should show the same upward acceleration peak at release; one-handed throws show one |
+| **WB-05 ball reaches target** | Needs the ball tracked through its flight and two scale estimates that agree: judged on **11 of 27** side-on reps, none from behind | **Wrist IMUs**: release-to-catch time *T* gives the rise above the hands (≈ g·T²/8 if caught at release height), with no view of the ball needed |
+| **Rep count with hidden joints** | Hips and knees hidden behind the body at the bottom (C4b: right knee hidden on 255 frames) | **Thigh IMU** cycles give the squat bottoms directly |
 
-## 2. Sensor per gap
+## 2. New insights that video can't give
 
-| Gap | Sensor and placement | What it measures | Why it works |
-|---|---|---|---|
-| **G1, G1b depth** | IMU on the **front of each thigh** (mid-femur), 100+ Hz, accelerometer + gyro | Thigh pitch against gravity. "Hips below knees" ≈ thigh past horizontal | Independent of camera angle. At the bottom of the squat the leg is turning around, so acceleration is near zero and gravity is a clean reference (orientation error ~2–5° with a complementary filter) |
-| **G2 two hands** | IMU in **both wrists** (watch + band, or two bands) | Upward acceleration peak of each hand at release | Two hands on a 9 kg ball push together: both wrists peak within ~50 ms with similar magnitude. A one-handed throw shows one spike |
-| **G3 target** | The same **wrist IMUs** | (a) Hand vertical speed *v* at release → peak = release height + *v*²/2g. (b) Release-to-catch time *T* (push peak to catch impact spike) → rise above release ≈ g*T*²/8 | Two physics estimates that need no view of the ball. (b) is robust: timing spikes are sharp and drift-free |
-| **G4 fatigue** | **EMG** on the quads (vastus lateralis) and front shoulder (anterior deltoid); fabric electrodes in shorts/top | Median frequency falls and RMS amplitude rises as a muscle fatigues | Predicts the depth fade a few reps before it shows. Quad onset vs deltoid onset also checks the coaching tip "finish the hip drive before the arm push" |
-| **G5 hidden joints** | Thigh + **shin** IMUs | Knee angle directly | Replaces the inverse-kinematics guess for the far knee in the 3D view |
+- **Fatigue across the set (EMG).** As a muscle fatigues, the surface-EMG power spectrum shifts to lower frequencies
+  and amplitude tends to rise [1, 2]. The coaching value is a warning *before* depth or pace drop: "your quads are
+  tiring, depth will slip". Caveat: median frequency is most reliable in steady contractions. A wall-ball rep is
+  dynamic, and the literature recommends time-frequency methods for that case [9]. I would treat this as a trend
+  within one set, never as an absolute number.
+- **Left/right asymmetry (two thigh IMUs, two quad EMG channels).** Per rep: the difference in thigh depth, drive
+  speed and quad activation between legs, reported as a standard symmetry index. Video side-on sees one leg.
+- **Which muscles do the work (EMG).** The throw should come from the hips and legs (quads, glutes), with the shoulders
+  finishing. The share of activation, and the timing of quad onset vs front-shoulder onset, test the Part 1 coaching
+  tip "finish the hip drive before the arms push". I found **no EMG study of the wall ball itself**, so expected
+  patterns would have to be measured, not assumed.
+- **Compensation patterns.** When legs fatigue, the arms take over: shoulder activation rises while hip drive speed
+  falls and the throw still lands. Video sees only that the ball hit.
+- **Power and tempo (IMU).** Hip vertical speed in the drive gives concentric power (body mass known). IMUs measuring
+  bar velocity are mostly valid and reliable when the specific device has been validated [10]. A pelvis or thigh IMU
+  also splits each rep into descent, bottom, drive, flight and catch, so a slow catch can be told apart from a slow
+  squat.
 
-**Minimum useful kit:** 2 thigh IMUs + 2 wrist IMUs. That closes G1–G3, the three gaps that change verdicts.
-EMG (G4) is coaching value, not judging.
+## 3. Sensor placement, and how few we can get away with
 
-## 3. Fusion plan
-
-**Principle: keep the rule engine; sensors become extra evidence per rule.** Every rule already returns
-`{status, value, low_confidence, reason}`. Each sensor gets the same interface, so fusion is a small, explainable
-decision per rule, not a black box.
-
-### 3.1 Time sync (the step that makes or breaks fusion)
-1. **Coarse:** at the start of the set the athlete stands tall (WB-02 already requires it) and does one quick squat
-   or a clap. That shows as a sharp event in both streams.
-2. **Fine:** cross-correlate the **hip's vertical acceleration from video** (second derivative of the smoothed hip
-   track, already computed) with the **thigh IMU's vertical acceleration** over the whole set. The peak gives the
-   offset.
-3. **Drift:** repeat the correlation per rep and fit a line (offset + clock drift).
-
-   Target: under one video frame (17–33 ms), checked by the residual of the fit.
-
-### 3.2 Calibration
-- **Zero:** the standing-tall phase before rep 1 (and every WB-03 reset) gives "thigh vertical", which re-zeroes each
-  thigh IMU against strap slip.
-- **Body scale:** the video already measures leg length *L*. It maps IMU angles onto the same joint-centre
-  depth definition as the side-on rule (the −0.17 L threshold), so camera and IMU depth mean the same thing.
-- **No magnetometer:** gym steel distorts it, and gravity is the only reference we need.
-
-### 3.3 Decision per rule
-
-| Video | Sensor | Result |
+| Sensor | Where | Gives |
 |---|---|---|
-| Confident | Agrees | Confident verdict (higher confidence shown) |
-| Confident | Disagrees beyond tolerance | **Can't judge**, and the rep is logged for calibration review |
-| Not assessable / borderline | Confident | Sensor decides (reason says "from thigh sensor") |
-| Not assessable | Missing or noisy | **Can't judge**, as today |
+| IMU ×2 | Front of each thigh, mid-femur, strapped (the front of the thigh moves least relative to the bone) | Depth from any view, squat bottoms, asymmetry, drive speed |
+| IMU ×2 | Both wrists (a watch and a band) | Two-handed release, throw height from flight time, catch timing |
+| IMU (optional) | Sacrum | Hip power and tempo phases |
+| EMG ×3–4 | Vastus lateralis (both legs), gluteus maximus, anterior deltoid; SENIAM placement [3] | Fatigue, which muscles work, compensation |
 
-For continuous values (depth, ball peak height) both sources are combined by **inverse-variance weighting**, then
-the existing threshold and borderline band apply. The "can't call a no-rep from behind" restriction on WB-01 is
-lifted only when the thigh IMU is present and confident.
+**Minimum: 3 IMUs (1 thigh + 2 wrists).** That fixes every verdict gap in section 1. A second thigh IMU adds
+asymmetry, and **one** EMG channel on the quad adds the fatigue trend. EMG is coaching value only. I would not let it
+decide a rep.
 
-### 3.4 Validation before trusting it
-1. Film side-on (camera = reference) with the IMUs on. Measure IMU-vs-video agreement on depth and two-hand calls,
-   rep by rep.
-2. Pass bar: ≥ 95 % agreement on clear reps, and disagreements only inside the borderline band.
-3. Then film the same athletes from behind and confirm the IMU still agrees with the side camera.
-4. Ball height: compare wrist-IMU peak estimates with the video's measured peaks on C1b-style clips, where both
-   rulers agree.
+## 4. Fusion approach
 
-### 3.5 Failure modes and handling
-- **Strap slip:** re-zero at each standing phase; flag when the standing angle drifts more than 10°.
-- **Catch impacts look like throws:** classify by phase. A push is an upward peak after the squat; a catch is a
-  downward impact after a free-fall gap.
-- **EMG sweat and electrode shifts:** use relative change within a set (frequency slope), never absolute amplitude.
-- **Missing sensor:** the system falls back to today's camera-only behaviour, including "can't judge".
+```
+ video 30-60 fps ──► pose ─► depth, wrists, ball ──┐
+ IMU 100-200 Hz ───► orientation filter [5] ───────┼─► per-rep features ─► rules WB-01…05 ─► verdict
+ EMG 1-2 kHz ──────► envelope + spectrum per burst ┘   (one rep timeline)   (each source: value + confidence)
+          └──── shared clock: device timestamps + sync event + cross-correlation ────┘
+```
 
-## 4. What this buys, in one line per rule
-- **WB-01:** depth judged from any camera angle. Front/back filming becomes valid.
-- **WB-04:** two-handed throw judged on every rep, not ~0 %.
-- **WB-05:** target height estimated on every rep, with video as a cross-check when it can see the ball.
-- **Summary:** "your quads are fatiguing, depth will fade in ~5 reps" *before* the no-reps start.
+**Time synchronisation.**
+1. **Device timestamps:** each stream keeps its own clock; nothing is resampled.
+2. **One deliberate event:** a clap or a single jump at the start, visible in every stream. This is the standard
+   manual practice; automatic event-based alignment exists [6].
+3. **Fine alignment:** cross-correlate the hip's vertical acceleration from video (second derivative of the tracked
+   hip) with the thigh IMU's acceleration over the whole set.
+4. **Clock drift:** re-run the correlation per rep and fit offset + drift.
+
+Target: under one video frame (17–33 ms), checked from the fit's residual.
+
+**Different sampling rates.** Streams aren't merged sample by sample. Each is reduced to **per-rep features** on the
+shared timeline:
+- **Video:** depth at the bottom.
+- **IMU:** thigh angle, release time, peak hand speed, flight time.
+- **EMG:** RMS envelope over about 50 ms windows; spectrum per burst.
+
+The thigh IMU defines the rep timeline once synced, because it is denser and never occluded.
+
+**Level of fusion** (signal / feature / decision, after [7]):
+
+| Level | Used for | Why |
+|---|---|---|
+| **Signal** | Only *inside* the IMU: accelerometer + gyro → orientation [5] | Same physical quantity on one clock. Video pixels, motion and muscle voltage are different quantities, so mixing raw signals across them buys nothing |
+| **Feature** | Continuous values measured twice: depth (video + thigh IMU), throw height (ball track + wrist flight time), combined by inverse-variance weighting | Two independent estimates of the same number |
+| **Decision** | The verdict | Each source returns pass / fail / can't judge with a confidence, as Part 1 already does. Agree → confident. Disagree → **can't judge**, and the rep is logged for review. One source missing → the other decides. A judge can see *why* a rep was called |
+
+## Close: the first two weeks with real sensor data
+
+- **Days 1–3: capture.** 3–5 athletes, side and rear cameras, 2 thigh + 2 wrist IMUs, quad and shoulder EMG.
+  Include deliberate shallow squats, one-handed throws and short throws: Part 1 has only five filmed shallow reps and
+  no one-handed or short throws.
+  Label every rep at 0.25× speed with two labellers.
+- **Days 4–5: sync.** Build and validate it; residual under one frame on every recording.
+- **Week 2a: thigh-IMU depth against side-on video.** Set the WB-01 threshold from both legal and illegal reps.
+  Then test whether the thigh IMU makes rear-view footage judgeable. *This one result removes Part 1's biggest
+  weakness.*
+- **Week 2b: wrist IMUs.** Two-hand detection and flight-time throw height, checked against the reps where the video
+  measured the ball.
+- **Week 2c: EMG, if time allows.** Does the per-rep fatigue slope come *before* depth creep?
+
+## What I'm unsure of
+
+- **EMG in a sweaty, dynamic, full-body movement:** electrode movement and motion artefacts may swamp the fatigue
+  signal.
+- **Thigh-strap slip:** soft-tissue movement is a major IMU error source. I'd re-zero at every standing phase, but I
+  haven't tested whether that is enough.
+- **Thigh angle vs the judge's rule:** how a thigh angle maps to "hip crease below the top of the knee" needs
+  calibrating per athlete.
+- **Hand speed at release vs ball speed:** whether they are equal enough for the throw-height estimate.
+- **Rep count and ball contact:** whether Women Open does 100 reps or 75 (secondary sources conflict), and whether a
+  hit means the ball's top or its centre reaching the line. Part 1 assumes top; one source says centre. Both need the
+  official rulebook.
+
+## References
+1. Cifrek M, Medved V, Tonković S, Ostojić S. Surface EMG based muscle fatigue evaluation in biomechanics. *Clin Biomech* 2009;24(4):327–340.
+2. De Luca CJ. The use of surface electromyography in biomechanics. *J Appl Biomech* 1997;13(2):135–163. doi:10.1123/jab.13.2.135
+3. Hermens HJ, Freriks B, Disselhorst-Klug C, Rau G. Development of recommendations for SEMG sensors and sensor placement procedures (SENIAM). *J Electromyogr Kinesiol* 2000;10(5):361–374. doi:10.1016/S1050-6411(00)00027-4
+4. O'Reilly M, Caulfield B, Ward T, Johnston W, Doherty C. Wearable inertial sensor systems for lower limb exercise detection and evaluation: a systematic review. *Sports Med* 2018;48(5):1221–1246. doi:10.1007/s40279-018-0878-4
+5. Madgwick SOH, Harrison AJL, Vaidyanathan R. Estimation of IMU and MARG orientation using a gradient descent algorithm. *IEEE ICORR* 2011.
+6. Bannach D, Amft O, Lukowicz P. Automatic event-based synchronization of multimodal data streams from wearable and ambient sensors. *EuroSSC* 2009, LNCS 5741. doi:10.1007/978-3-642-04471-7_11
+7. Hall DL, Llinas J. An introduction to multisensor data fusion. *Proc IEEE* 1997;85(1):6–23. doi:10.1109/5.554205
+8. IMU vs optical motion capture for knee flexion in squats, sit-to-stand and walking (mean RMSD < 4–6°). *PLOS ONE*. doi:10.1371/journal.pone.0297899
+9. Shifts in EMG spectral power during fatiguing dynamic contractions. *Muscle & Nerve*. PubMed 24122808
+10. Validity and reliability of the inertial measurement unit for barbell velocity assessments: a systematic review. *Sensors* 2021. PubMed 33916801
+
+Review [4], 47 studies, is the background for sections 1 and 3: most IMU exercise work so far validates measurements
+and classifies exercise quality, with few user studies.

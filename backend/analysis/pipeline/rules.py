@@ -5,6 +5,8 @@ Each rule returns {status: pass|fail|not_assessable, low_confidence, value, thre
 """
 import numpy as np
 
+from . import signals
+
 
 def _res(status, reason, value=None, threshold=None, low=False):
     return {"status": status, "low_confidence": bool(low),
@@ -26,20 +28,31 @@ def _longest_run(mask):
 
 def _stand_tall(B, a, b, fps, p):
     """Longest hold (s) with knees and hips extended in frames [a, b)."""
-    ok = (B["knee_angle"][a:b] >= p["min_angle"]) & (B["hip_angle"][a:b] >= p["min_angle"])
-    return _longest_run(ok) / fps
+    angle = B["extension"][a:b]
+    ok = angle >= p["min_angle"]
+    held = _longest_run(ok) / fps
+    if held < p["min_hold_s"] <= _longest_run(ok | ~np.isfinite(angle)) / fps:
+        return None
+    return held
 
 
 def wb01_drop(B, rep, ctx, p):
     """Front or behind: hip and knee line up with the camera, so hip-vs-knee can't be measured. Use how far the hip
     dropped instead: hip height above the ankles at the bottom / standing hip height. Perspective makes squats look
     deeper from behind, so this can only confirm a clearly deep rep; it never calls a no-rep."""
-    h = B["ankle"][:, 1] - B["hip"][:, 1]
-    stand = np.nanpercentile(h[max(0, rep["start"] - p["stand_window_frames"]):rep["end"] + 1], 95)
     lo, hi = max(0, rep["bottom"] - p["bottom_window_frames"]), rep["bottom"] + p["bottom_window_frames"] + 1
-    drop = np.nanmin(h[lo:hi]) / stand
-    if not np.isfinite(drop):
+    ratios = []
+    for hip, ankle in [(signals.L_HIP, signals.L_ANK), (signals.R_HIP, signals.R_ANK)]:
+        h = B["observed"][:, ankle, 1] - B["observed"][:, hip, 1]
+        standing = h[max(0, rep["start"] - p["stand_window_frames"]):rep["end"] + 1]
+        standing = standing[standing > 0]
+        bottom = h[lo:hi]
+        bottom = bottom[bottom > 0]
+        if h[rep["bottom"]] > 0 and standing.size and bottom.size:
+            ratios.append(bottom.min() / np.percentile(standing, 95))
+    if not ratios:
         return _na("hip or ankle not tracked at the bottom")
+    drop = min(ratios)
     if drop <= p["max_drop"] - p["borderline"]:
         return {**_res("pass", f"estimated from the front or behind: hip dropped to {drop:.2f} of standing height",
                        drop, p["max_drop"]), "cmp": "≤", "unit": "× standing"}
@@ -51,14 +64,15 @@ def wb01_depth(B, rep, ctx, p):
     if ctx["view"] != "side":
         return wb01_drop(B, rep, ctx, p["front"])
     lo, hi = max(0, rep["bottom"] - p["bottom_window_frames"]), rep["bottom"] + p["bottom_window_frames"] + 1
-    depth = np.nanmax((B["hip"][lo:hi, 1] - B["knee"][lo:hi, 1]) / ctx["L"])
-    if not np.isfinite(depth):
-        return _na("hip or knee not tracked at the bottom")
-    vis = np.nanmean(np.r_[B["hip"][lo:hi, 2], B["knee"][lo:hi, 2]])
-    # One-sided: the threshold already sits below every legal reference rep, so a pass is a pass. Only a rep that
-    # misses by less than the borderline is too close to call (the benefit of the doubt instead of a no-rep).
-    near_miss = p["min_depth_ratio"] - p["borderline"] < depth < p["min_depth_ratio"]
-    low = near_miss or vis < p["min_visibility"]
+    hip, knee = B["depth_pair"][:, lo:hi]
+    seen = np.isfinite(hip[:, 1])
+    if not seen[rep["bottom"] - lo] or not np.isfinite(ctx["L"]):
+        return _na("no reliable hip and knee at the bottom or no observed leg length")
+    depth = np.max(hip[seen, 1] - knee[seen, 1]) / ctx["L"]
+    if depth < p["min_depth_ratio"] and not seen.all():
+        return _na("part of the squat bottom is hidden and could contain the deepest point")
+    # A near miss gets the benefit of the doubt.
+    low = p["min_depth_ratio"] - p["borderline"] < depth < p["min_depth_ratio"]
     where = "below" if depth >= 0 else "above"
     return _res("pass" if depth >= p["min_depth_ratio"] else "fail",
                 f"hip {abs(depth):.2f} L {where} knee at the bottom", depth, p["min_depth_ratio"], low)
@@ -68,22 +82,36 @@ def wb02_start(B, rep, ctx, p):
     if ctx["n"] != 1:
         return None                      # only the first rep has a "start position"
     held = _stand_tall(B, 0, rep["bottom"], ctx["fps"], p)
+    if held is None:
+        return _na("the start position is hidden long enough to conceal a standing hold")
     if held >= p["min_hold_s"]:
         return _res("pass", f"stood tall for {held:.2f} s before rep 1", held, p["min_hold_s"])
-    if rep["bottom"] / ctx["fps"] < p["min_hold_s"] * 2:
+    if (rep["bottom"] / ctx["fps"] < p["min_hold_s"] * 2 or not np.isfinite(B["extension"][0])
+            or B["extension"][0] >= p["min_angle"]):
         return _na("clip starts too close to the first squat to see the start position")
     return _res("fail", f"never stood tall (knees and hips >= {p['min_angle']} deg) before rep 1", held, p["min_hold_s"])
 
 
 def wb03_reset(B, rep, ctx, p):
-    """Ball came from the floor (both wrists below the knees) -> must stand tall again before squatting."""
+    """A low pair of wrists, or a low wrist and detected held ball, establishes the pickup."""
     lo = ctx["prev_release"]
     below = ((B["wrist_l"][lo:rep["bottom"], 1] > B["knee"][lo:rep["bottom"], 1]) &
              (B["wrist_r"][lo:rep["bottom"], 1] > B["knee"][lo:rep["bottom"], 1]))
-    if not below.any():
-        return None                      # ball was caught: rule doesn't apply
-    pickup = lo + int(np.flatnonzero(below)[-1])
+    obs = B["observed"][lo:rep["bottom"]]
+    knee, = signals.visible_side(obs, signals.L_KNEE)
+    hands = obs[:, [signals.L_WR, signals.R_WR], 1]
+    low_hands = hands > knee[:, 1, None]
+    ball_low = B["held_y"][lo:rep["bottom"]] > knee[:, 1]
+    confirmed = low_hands.all(axis=1) | (low_hands.any(axis=1) & ball_low)
+    if not confirmed.any():
+        one_low_other_hidden = low_hands.any(axis=1) & ~np.isfinite(hands).all(axis=1)
+        if below.any() or one_low_other_hidden.any() or not np.isfinite(hands).any():
+            return _na("the hands or ball are hidden during a possible floor pickup")
+        return None
+    pickup = lo + int(np.flatnonzero(confirmed)[-1])
     held = _stand_tall(B, pickup, rep["bottom"], ctx["fps"], p)
+    if held is None:
+        return _na("the standing position after the pickup is hidden")
     ok = held >= p["min_hold_s"]
     return _res("pass" if ok else "fail",
                 f"picked ball up, then {'stood tall' if ok else 'squatted without standing tall'} ({held:.2f} s)",
@@ -92,13 +120,9 @@ def wb03_reset(B, rep, ctx, p):
 
 def wb04_two_hands(B, rep, ctx, p):
     r = rep["release"]
-    wl, wr, nose = B["wrist_l"][r], B["wrist_r"][r], B["nose"][r]
-    # Evidence only: both wrists must be observed in the video at release. Cleaning bridges short no-pose gaps
-    # (visibility included), and a bridged wrist must never count as a two-handed throw. NaN compares False.
-    seen = B.get("seen")
-    observed = seen is None or (seen[r, 15] >= p["min_visibility"] and seen[r, 16] >= p["min_visibility"])
-    if not observed or min(wl[2], wr[2]) < p["min_visibility"]:
-        return _na("a wrist is hidden at release")
+    wl, wr, nose = B["observed"][r, [signals.L_WR, signals.R_WR, signals.NOSE]]
+    if not np.all(np.array([wl[2], wr[2], nose[2]]) >= p["min_visibility"]) or not np.isfinite(ctx["L"]):
+        return _na("release needs both wrists, the nose and a reliable leg length")
     gap = np.hypot(*(wl[:2] - wr[:2])) / ctx["L"]
     both_up = wl[1] < nose[1] and wr[1] < nose[1]
     ok = both_up and gap <= p["max_wrist_gap"]
@@ -120,7 +144,10 @@ def wb05_target(B, rep, ctx, p):
     if not (1 - p["ruler_tolerance"] < agree < 1 + p["ruler_tolerance"]):
         return _na(f"ball track unreliable: size and gravity disagree on the scale ({agree:.2f}x)")
     shaky = abs(agree - 1) > p["ruler_tolerance"] / 2
-    floor_y = np.nanmax(B["ankle"][max(0, rep["release"] - 2):rep["release"] + 3, 1]) + p["ankle_height_m"] * ppm
+    ankle, = signals.visible_side(B["observed"][max(0, rep["release"] - 2):rep["release"] + 3], signals.L_ANK)
+    if not np.isfinite(ankle[:, 1]).any():
+        return _na("no visible ankle near release to locate the floor")
+    floor_y = np.nanmax(ankle[:, 1]) + p["ankle_height_m"] * ppm
 
     def top(y):                                                     # ball's top edge above the floor, metres
         return (floor_y - y) / ppm + p["ball_diameter_m"] / 2
@@ -154,8 +181,15 @@ def verdict(results, cfg):
 
 def judge(B, reps, view, fps, cfg, ball=None):
     out, prev_release = [], 0
+    hip, knee, ankle = signals.visible_side(B["observed"], signals.L_HIP, signals.L_KNEE, signals.L_ANK)
+    leg = signals._dist(hip, knee) + signals._dist(knee, ankle)
+    shoulder, hip, knee, ankle = signals.visible_side(B["observed"], signals.L_SH, signals.L_HIP,
+                                                      signals.L_KNEE, signals.L_ANK)
+    B["extension"] = np.minimum(signals.angle(shoulder, hip, knee), signals.angle(hip, knee, ankle))
     for n, rep in enumerate(reps, 1):
-        L = np.nanmedian(B["leg"][rep["start"]:rep["end"] + 1])     # per-rep: athlete may drift
+        lengths = leg[rep["start"]:rep["end"] + 1]
+        lengths = lengths[lengths > 0]
+        L = np.median(lengths) if lengths.size else np.nan
         ctx = {"n": n, "fps": fps, "L": L, "prev_release": prev_release, "view": view, "ball": ball}
         results = {}
         for rid, fn in RULES.items():

@@ -14,23 +14,30 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.25,
+     "value": 0.246,
      "threshold": 0.3,
      "reason": "estimated from the front or behind: hip dropped to 0.25 of standing height",
      "cmp": "\u2264",
      "unit": "\u00d7 standing"
     },
     "WB-02": {
-     "status": "pass",
+     "status": "not_assessable",
      "low_confidence": false,
-     "value": 0.417,
-     "threshold": 0.2,
-     "reason": "stood tall for 0.42 s before rep 1"
+     "value": null,
+     "threshold": null,
+     "reason": "clip starts too close to the first squat to see the start position"
+    },
+    "WB-03": {
+     "status": "not_assessable",
+     "low_confidence": false,
+     "value": null,
+     "threshold": null,
+     "reason": "the hands or ball are hidden during a possible floor pickup"
     },
     "WB-04": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.595,
+     "value": 0.509,
      "threshold": 0.6,
      "reason": "both hands on the ball at release"
     },
@@ -42,9 +49,12 @@
      "reason": "not assessable from this view (front or behind)"
     }
    },
-   "verdict": "proper",
+   "verdict": "uncertain",
    "failed": [],
-   "unsure": []
+   "unsure": [
+    "WB-02",
+    "WB-03"
+   ]
   },
   {
    "n": 2,
@@ -57,16 +67,16 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.244,
+     "value": 0.235,
      "threshold": 0.3,
-     "reason": "estimated from the front or behind: hip dropped to 0.24 of standing height",
+     "reason": "estimated from the front or behind: hip dropped to 0.23 of standing height",
      "cmp": "\u2264",
      "unit": "\u00d7 standing"
     },
     "WB-04": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.484,
+     "value": 0.441,
      "threshold": 0.6,
      "reason": "both hands on the ball at release"
     },
@@ -93,16 +103,16 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.232,
+     "value": 0.22,
      "threshold": 0.3,
-     "reason": "estimated from the front or behind: hip dropped to 0.23 of standing height",
+     "reason": "estimated from the front or behind: hip dropped to 0.22 of standing height",
      "cmp": "\u2264",
      "unit": "\u00d7 standing"
     },
     "WB-04": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.528,
+     "value": 0.501,
      "threshold": 0.6,
      "reason": "both hands on the ball at release"
     },
@@ -129,16 +139,16 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.245,
+     "value": 0.233,
      "threshold": 0.3,
-     "reason": "estimated from the front or behind: hip dropped to 0.24 of standing height",
+     "reason": "estimated from the front or behind: hip dropped to 0.23 of standing height",
      "cmp": "\u2264",
      "unit": "\u00d7 standing"
     },
     "WB-04": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.5,
+     "value": 0.447,
      "threshold": 0.6,
      "reason": "both hands on the ball at release"
     },
@@ -165,16 +175,16 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.24,
+     "value": 0.231,
      "threshold": 0.3,
-     "reason": "estimated from the front or behind: hip dropped to 0.24 of standing height",
+     "reason": "estimated from the front or behind: hip dropped to 0.23 of standing height",
      "cmp": "\u2264",
      "unit": "\u00d7 standing"
     },
     "WB-04": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.498,
+     "value": 0.448,
      "threshold": 0.6,
      "reason": "both hands on the ball at release"
     },
@@ -199,9 +209,9 @@
  ],
  "summary": {
   "total": 5,
-  "proper": 5,
+  "proper": 4,
   "not_proper": 0,
-  "uncertain": 0,
+  "uncertain": 1,
   "fault_counts": {},
   "most_common_fault": null,
   "cycle_times": [
@@ -223,12 +233,13 @@
   "pauses": 0,
   "rest_s": 0,
   "takeaways": [
-   "All 5 reps met the standard.",
    "At 1.8 s/rep the 100-rep wall-ball station takes 3:03 unbroken."
   ]
  },
  "warnings": [
   "Filmed from the front or behind: hip and knee line up with the camera, so squat depth (WB-01) is estimated from how far the hip drops. It can confirm clearly deep reps but can't call a no-rep. Film side-on to judge depth properly.",
+  "WB-02 Start standing tall: not assessable on 1/5 reps (clip starts too close to the first squat to see the start position).",
+  "WB-03 Reset after picking up the ball: not assessable on 1/5 reps (the hands or ball are hidden during a possible floor pickup).",
   "WB-05 Ball reaches the target: not assessable on 5/5 reps (not assessable from this view (front or behind)).",
   "Not counted at 9.9 s: squat without a throw (ball pick-up or rest)."
  ],

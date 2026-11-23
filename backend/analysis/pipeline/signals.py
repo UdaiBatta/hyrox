@@ -48,19 +48,40 @@ def _smooth(x, window):
     return out
 
 
-def clean(P, fps, roll_deg, width, height):
+def clean(P, fps, roll_deg, width, height, *, bridge=True):
     P = P.copy()
     if roll_deg:   # calibration: rotate points about the frame centre (positive = clockwise on screen)
         c, s = np.cos(np.radians(roll_deg)), np.sin(np.radians(roll_deg))
         x, y = P[..., 0] - width / 2, P[..., 1] - height / 2
         P[..., 0], P[..., 1] = c * x - s * y + width / 2, s * x + c * y + height / 2
     window = max(5, int(round(0.15 * fps)) | 1)   # ~0.15 s, odd
-    for j in range(33):
+    for j in range(P.shape[1]):
         for k in range(3):
-            P[:, j, k] = _fill_gaps(P[:, j, k])
+            if bridge:
+                P[:, j, k] = _fill_gaps(P[:, j, k])
             if k < 2:
                 P[:, j, k] = _smooth(P[:, j, k], window)
     return P
+
+
+def evidence(raw, data, cfg, min_visibility):
+    """Smooth continuous runs of visible samples. A guessed point cannot influence its neighbours."""
+    x, y, vis = raw.transpose(2, 0, 1)
+    usable = ((x >= 0) & (x < data["width"]) & (y >= 0) & (y < data["height"])
+              & np.isfinite(vis) & (vis >= min_visibility))
+    return clean(np.where(usable[..., None], raw, np.nan), data["fps"], cfg["camera_roll_deg"],
+                 data["width"], data["height"], bridge=False)
+
+
+def visible_side(P, *left_indices):
+    """Use one complete anatomical chain per frame, selecting its weakest joint's higher visibility."""
+    left = P[:, left_indices]
+    right = P[:, [j + 1 for j in left_indices]]
+    score_l = np.nan_to_num(left[:, :, 2], nan=-1).min(axis=1)
+    score_r = np.nan_to_num(right[:, :, 2], nan=-1).min(axis=1)
+    chain = np.where((score_r > score_l)[:, None, None], right, left)
+    chain[np.maximum(score_l, score_r) < 0] = np.nan
+    return chain.transpose(1, 0, 2)
 
 
 def _mid(P, left, right):

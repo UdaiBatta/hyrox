@@ -36,6 +36,60 @@ def synthetic(depths):
 
 
 class PipelineTest(unittest.TestCase):
+    def test_hidden_hips_cannot_pass_depth_and_one_visible_side_still_works(self):
+        cfg = load_config()
+        for hidden, expected in [([24], "pass"), ([23, 24], "not_assessable")]:
+            data = synthetic([1, 1])
+            for f in data["frames"][39:52]:
+                for joint in hidden:
+                    f["kp"][joint][2] = 0.01
+            rep = analyze(data, cfg)["reps"][0]
+            self.assertEqual(rep["rules"]["WB-01"]["status"], expected)
+
+    def test_missing_start_is_uncertain(self):
+        data = synthetic([1])
+        for f in data["frames"][:45]:
+            for j in (11, 12):
+                f["kp"][j][2] = 0.01
+        rep = analyze(data, load_config())["reps"][0]
+        self.assertEqual(rep["rules"]["WB-02"]["status"], "not_assessable")
+
+    def test_visible_ascent_cannot_replace_a_hidden_bottom(self):
+        data = synthetic([1, 1])
+        cfg = load_config()
+        bottom = analyze(data, cfg)["reps"][0]["bottom"]
+        for j in (25, 26):
+            data["frames"][bottom]["kp"][j][2] = 0.1
+        self.assertEqual(analyze(data, cfg)["reps"][0]["rules"]["WB-01"]["status"], "not_assessable")
+
+    def test_estimated_ball_cannot_confirm_a_pickup_with_a_hidden_wrist(self):
+        data = synthetic([1])
+        track = [None] * data["n_frames"]
+        for frame in data["frames"][32:39]:
+            kp = frame["kp"]
+            for j in range(15, 23):
+                kp[j] = [kp[25][0], kp[25][1] + 50, 0.9 if j % 2 else 0.01]
+            track[frame["i"]] = [round(kp[15][0], 1), round(kp[15][1], 1), 40, 1]
+        cfg = load_config()
+        def reset():
+            return analyze(data, cfg, track=track)["reps"][0]["rules"]["WB-03"]["status"]
+        self.assertEqual(reset(), "not_assessable")
+        for point in track[32:39]:
+            point[0] += 5  # circle measured next to the observed wrist
+        self.assertEqual(reset(), "fail")
+
+    def test_cropped_ankles_cannot_confirm_rear_depth(self):
+        data = synthetic([1, 1])
+        for f in data["frames"]:
+            f["kp"][11][0] = 350
+            f["kp"][12][0] = 650
+            if 39 <= f["i"] <= 51:
+                for ankle in (27, 28):
+                    f["kp"][ankle][1] = data["height"]
+        res = analyze(data, load_config())
+        self.assertEqual(res["view"], "front")
+        self.assertEqual(res["reps"][0]["rules"]["WB-01"]["status"], "not_assessable")
+
     def test_counts_reps_and_flags_the_shallow_one(self):
         res = analyze(synthetic([1, 1, 0.5, 1, 1]), load_config())
         self.assertEqual(res["view"], "side")
@@ -82,7 +136,10 @@ class FrontViewDepthTest(unittest.TestCase):
         def run(bottom_h):
             h = np.full(21, 400.0)
             h[10] = bottom_h
-            B = {"ankle": np.c_[np.zeros(21), np.full(21, 1000.0)], "hip": np.c_[np.zeros(21), 1000.0 - h]}
+            observed = np.full((21, 33, 3), np.nan)
+            observed[:, 27] = [0, 1000, 1]
+            observed[:, 23] = np.c_[np.zeros(21), 1000 - h, np.ones(21)]
+            B = {"observed": observed}
             return rules.wb01_depth(B, rep, ctx, p)["status"]
 
         self.assertEqual(run(80), "pass")                # 0.20 of standing: clearly deep

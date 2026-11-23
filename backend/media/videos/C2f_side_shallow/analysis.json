@@ -1,0 +1,372 @@
+{
+ "view": "side",
+ "fps": 24.0,
+ "n_frames": 48,
+ "reps": [
+  {
+   "n": 1,
+   "start": 5,
+   "bottom": 16,
+   "release": 34,
+   "end": 26,
+   "t_bottom": 0.667,
+   "rules": {
+    "WB-01": {
+     "status": "fail",
+     "low_confidence": false,
+     "value": -0.291,
+     "threshold": -0.08,
+     "reason": "hip 0.29 L above knee at the bottom"
+    },
+    "WB-02": {
+     "status": "fail",
+     "low_confidence": false,
+     "value": 0.0,
+     "threshold": 0.2,
+     "reason": "never stood tall (knees and hips >= 160 deg) before rep 1"
+    },
+    "WB-04": {
+     "status": "not_assessable",
+     "low_confidence": false,
+     "value": null,
+     "threshold": null,
+     "reason": "release needs both wrists, the nose and a reliable leg length"
+    },
+    "WB-05": {
+     "status": "pass",
+     "low_confidence": false,
+     "value": 3.801,
+     "threshold": 3.0,
+     "reason": "ball left the top of the frame above 3.80 m (target 3.00 m)"
+    }
+   },
+   "verdict": "not_proper",
+   "failed": [
+    "WB-01",
+    "WB-02"
+   ],
+   "unsure": []
+  }
+ ],
+ "ignored_dips": [],
+ "summary": {
+  "total": 1,
+  "proper": 0,
+  "not_proper": 1,
+  "uncertain": 0,
+  "fault_counts": {
+   "WB-01": 1,
+   "WB-02": 1
+  },
+  "most_common_fault": "WB-01",
+  "cycle_times": [],
+  "tempo_thirds": [
+   null,
+   null,
+   null
+  ],
+  "depth_thirds": [
+   null,
+   null,
+   -0.29
+  ],
+  "pauses": 0,
+  "rest_s": 0,
+  "takeaways": [
+   "1 of 1 reps failed WB-01 (Squat depth (hips below knees)). Sit deeper: hip crease clearly below the top of the knee before you drive up."
+  ]
+ },
+ "warnings": [
+  "WB-04 Two-handed throw: not assessable on 1/1 reps (release needs both wrists, the nose and a reliable leg length)."
+ ],
+ "ball": [
+  [
+   276.8,
+   414.1,
+   31.8,
+   1
+  ],
+  [
+   279.0,
+   408.5,
+   31.7,
+   1
+  ],
+  [
+   282.2,
+   400.1,
+   31.7,
+   1
+  ],
+  [
+   283.6,
+   394.4,
+   31.8,
+   1
+  ],
+  [
+   284.0,
+   388.9,
+   32.0,
+   1
+  ],
+  [
+   285.5,
+   388.2,
+   31.9,
+   1
+  ],
+  [
+   286.2,
+   386.2,
+   31.9,
+   1
+  ],
+  [
+   277.8,
+   373.0,
+   31.9,
+   1
+  ],
+  [
+   285.9,
+   390.0,
+   31.6,
+   1
+  ],
+  [
+   287.8,
+   398.2,
+   31.2,
+   1
+  ],
+  [
+   288.7,
+   408.2,
+   30.6,
+   1
+  ],
+  [
+   288.5,
+   418.7,
+   30.5,
+   1
+  ],
+  [
+   278.0,
+   415.4,
+   30.4,
+   1
+  ],
+  [
+   288.1,
+   437.8,
+   30.5,
+   1
+  ],
+  [
+   287.8,
+   445.2,
+   30.5,
+   1
+  ],
+  [
+   286.9,
+   450.6,
+   30.3,
+   1
+  ],
+  [
+   285.5,
+   455.2,
+   30.4,
+   1
+  ],
+  [
+   284.2,
+   454.9,
+   30.7,
+   1
+  ],
+  [
+   282.4,
+   451.9,
+   30.8,
+   1
+  ],
+  [
+   280.6,
+   449.0,
+   30.8,
+   1
+  ],
+  [
+   280.3,
+   434.4,
+   31.1,
+   1
+  ],
+  [
+   278.8,
+   416.1,
+   30.9,
+   1
+  ],
+  [
+   278.9,
+   394.9,
+   31.2,
+   1
+  ],
+  [
+   279.8,
+   370.3,
+   30.9,
+   1
+  ],
+  [
+   277.8,
+   335.5,
+   31.8,
+   1
+  ],
+  [
+   276.4,
+   300.5,
+   32.6,
+   1
+  ],
+  [
+   272.9,
+   267.1,
+   32.8,
+   1
+  ],
+  [
+   273.2,
+   252.2,
+   32.6,
+   1
+  ],
+  [
+   281.3,
+   232.2,
+   32.6,
+   1
+  ],
+  [
+   300.8,
+   233.8,
+   32.0,
+   1
+  ],
+  [
+   307.4,
+   231.0,
+   31.9,
+   1
+  ],
+  [
+   312.4,
+   233.5,
+   31.8,
+   1
+  ],
+  [
+   315.8,
+   235.1,
+   31.7,
+   1
+  ],
+  [
+   316.4,
+   233.2,
+   31.7,
+   1
+  ],
+  [
+   215.8,
+   33.7,
+   31.7,
+   0
+  ],
+  [
+   210.3,
+   29.6,
+   31.7,
+   0
+  ],
+  [
+   208.5,
+   25.0,
+   31.7,
+   0
+  ],
+  [
+   200.5,
+   25.3,
+   31.7,
+   0
+  ],
+  [
+   192.3,
+   28.9,
+   31.7,
+   0
+  ],
+  [
+   188.3,
+   35.7,
+   31.7,
+   0
+  ],
+  [
+   188.3,
+   46.1,
+   31.7,
+   0
+  ],
+  [
+   191.1,
+   60.1,
+   31.7,
+   0
+  ],
+  [
+   197.6,
+   77.2,
+   31.7,
+   0
+  ],
+  [
+   206.3,
+   97.4,
+   31.7,
+   0
+  ],
+  [
+   213.5,
+   121.0,
+   31.7,
+   0
+  ],
+  [
+   218.3,
+   148.6,
+   31.7,
+   0
+  ],
+  [
+   222.7,
+   180.3,
+   31.7,
+   0
+  ],
+  [
+   227.0,
+   215.7,
+   31.7,
+   0
+  ]
+ ]
+}

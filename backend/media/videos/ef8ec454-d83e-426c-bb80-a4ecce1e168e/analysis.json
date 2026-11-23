@@ -14,30 +14,30 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": -0.102,
-     "threshold": -0.17,
-     "reason": "hip 0.10 L above knee at the bottom"
+     "value": -0.05,
+     "threshold": -0.08,
+     "reason": "hip 0.05 L above knee at the bottom"
     },
     "WB-02": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.25,
+     "value": 0.208,
      "threshold": 0.2,
-     "reason": "stood tall for 0.25 s before rep 1"
+     "reason": "stood tall for 0.21 s before rep 1"
     },
     "WB-04": {
      "status": "not_assessable",
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "pass",
      "low_confidence": false,
-     "value": 3.605,
+     "value": 3.718,
      "threshold": 3.0,
-     "reason": "ball peaked at 3.61 m, target 3.00 m"
+     "reason": "ball peaked at 3.72 m, target 3.00 m"
     }
    },
    "verdict": "proper",
@@ -55,23 +55,23 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": -0.125,
-     "threshold": -0.17,
-     "reason": "hip 0.12 L above knee at the bottom"
+     "value": -0.071,
+     "threshold": -0.08,
+     "reason": "hip 0.07 L above knee at the bottom"
     },
     "WB-04": {
      "status": "not_assessable",
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "pass",
      "low_confidence": false,
-     "value": 3.536,
+     "value": 3.642,
      "threshold": 3.0,
-     "reason": "ball left the top of the frame above 3.54 m (target 3.00 m)"
+     "reason": "ball left the top of the frame above 3.64 m (target 3.00 m)"
     }
    },
    "verdict": "proper",
@@ -89,16 +89,16 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": -0.135,
-     "threshold": -0.17,
-     "reason": "hip 0.13 L above knee at the bottom"
+     "value": -0.068,
+     "threshold": -0.08,
+     "reason": "hip 0.07 L above knee at the bottom"
     },
     "WB-04": {
      "status": "not_assessable",
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -123,23 +123,23 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": -0.115,
-     "threshold": -0.17,
-     "reason": "hip 0.11 L above knee at the bottom"
+     "value": -0.057,
+     "threshold": -0.08,
+     "reason": "hip 0.06 L above knee at the bottom"
     },
     "WB-04": {
      "status": "not_assessable",
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "pass",
      "low_confidence": false,
-     "value": 3.651,
+     "value": 3.755,
      "threshold": 3.0,
-     "reason": "ball left the top of the frame above 3.65 m (target 3.00 m)"
+     "reason": "ball left the top of the frame above 3.75 m (target 3.00 m)"
     }
    },
    "verdict": "proper",
@@ -157,23 +157,23 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": -0.104,
-     "threshold": -0.17,
-     "reason": "hip 0.10 L above knee at the bottom"
+     "value": -0.055,
+     "threshold": -0.08,
+     "reason": "hip 0.05 L above knee at the bottom"
     },
     "WB-04": {
      "status": "not_assessable",
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "pass",
      "low_confidence": false,
-     "value": 3.617,
+     "value": 3.722,
      "threshold": 3.0,
-     "reason": "ball left the top of the frame above 3.62 m (target 3.00 m)"
+     "reason": "ball left the top of the frame above 3.72 m (target 3.00 m)"
     }
    },
    "verdict": "proper",
@@ -191,23 +191,23 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": -0.113,
-     "threshold": -0.17,
-     "reason": "hip 0.11 L above knee at the bottom"
+     "value": -0.062,
+     "threshold": -0.08,
+     "reason": "hip 0.06 L above knee at the bottom"
     },
     "WB-04": {
      "status": "not_assessable",
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "pass",
      "low_confidence": false,
-     "value": 3.544,
+     "value": 3.651,
      "threshold": 3.0,
-     "reason": "ball left the top of the frame above 3.54 m (target 3.00 m)"
+     "reason": "ball left the top of the frame above 3.65 m (target 3.00 m)"
     }
    },
    "verdict": "proper",
@@ -225,23 +225,23 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": -0.102,
-     "threshold": -0.17,
-     "reason": "hip 0.10 L above knee at the bottom"
+     "value": -0.059,
+     "threshold": -0.08,
+     "reason": "hip 0.06 L above knee at the bottom"
     },
     "WB-04": {
      "status": "not_assessable",
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "pass",
      "low_confidence": false,
-     "value": 3.564,
+     "value": 3.663,
      "threshold": 3.0,
-     "reason": "ball left the top of the frame above 3.56 m (target 3.00 m)"
+     "reason": "ball left the top of the frame above 3.66 m (target 3.00 m)"
     }
    },
    "verdict": "proper",
@@ -259,16 +259,16 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": -0.146,
-     "threshold": -0.17,
-     "reason": "hip 0.15 L above knee at the bottom"
+     "value": -0.066,
+     "threshold": -0.08,
+     "reason": "hip 0.07 L above knee at the bottom"
     },
     "WB-04": {
      "status": "not_assessable",
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -293,16 +293,16 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": -0.132,
-     "threshold": -0.17,
-     "reason": "hip 0.13 L above knee at the bottom"
+     "value": -0.063,
+     "threshold": -0.08,
+     "reason": "hip 0.06 L above knee at the bottom"
     },
     "WB-04": {
      "status": "not_assessable",
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -346,20 +346,20 @@
    1.54
   ],
   "depth_thirds": [
-   -0.12,
-   -0.11,
-   -0.13
+   -0.06,
+   -0.06,
+   -0.06
   ],
   "pauses": 0,
   "rest_s": 0,
   "takeaways": [
    "All 9 reps met the standard.",
-   "Rep 8 was your shallowest and only just made depth (2% of leg length to spare). A judge could call that one. Sit a little deeper on every rep.",
+   "Rep 2 was your shallowest and only just made depth (1% of leg length to spare). A judge could call that one. Sit a little deeper on every rep.",
    "At 1.9 s/rep the 100-rep wall-ball station takes 3:06 unbroken."
   ]
  },
  "warnings": [
-  "WB-04 Two-handed throw: not assessable on 9/9 reps (a wrist is hidden at release).",
+  "WB-04 Two-handed throw: not assessable on 9/9 reps (release needs both wrists, the nose and a reliable leg length).",
   "WB-05 Ball reaches the target: not assessable on 3/9 reps (ball not followed for enough of this throw).",
   "Not counted at 17.3 s: squat without a throw (ball pick-up or rest)."
  ],

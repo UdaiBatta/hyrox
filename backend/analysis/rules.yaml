@@ -5,6 +5,7 @@
 # Primary source: HYROX Singles Rulebook 2025/26 R1, section 9.8 Wall Balls, pp.26-27.
 
 camera_roll_deg: 0        # calibration for a crooked clip: rotates keypoints (positive = clockwise on screen)
+evidence_min_visibility: 0.5  # exclude weak or off-screen landmarks before smoothing evidence for any rule
 
 view:
   side_max_ratio: 0.5     # shoulder width / torso length below this = side-on (front-on adult ~0.8, side-on ~0.1-0.3)
@@ -20,13 +21,9 @@ rules:
     rationale: >
       MediaPipe's hip point is the hip-joint centre (above the hip crease) and its knee point is the knee-joint
       centre (below the top of the knee). Joint centre below joint centre is stricter than a judge's crease-below-knee,
-      so a negative margin is allowed. Calibrated 2026-11-21 on CrossFit's official wall-ball standard video
-      (clips/C1_side_studio.mp4, reps legal by definition, thighs ~parallel at the bottom): joint-centre depth
-      -0.10 to -0.15 L on all 9 reps. A clearly deep athlete (C1b) measures +0.09 to +0.18 L. Threshold -0.17 L
-      keeps every reference rep legal. The borderline is one-sided: a rep missing by under 0.03 L (-0.20..-0.17) is
-      "can't judge", not a no-rep. It used to be +/-0.03, which flagged a legal reference rep (C1 rep 8, -0.146)
-      as can't-judge: the margin is already built into -0.17, so passes aren't second-guessed.
-      First guess was -0.03 (failed all 9 legal reps).
+      so a negative margin is allowed. With same-side visible joints the nine legal C1 calibration reps measure
+      -0.071 to -0.050 L. Round the shallowest reference down to the next hundredth (-0.08 L) for a pass.
+      A miss smaller than 0.03 L remains borderline. The separate filmed depth benchmark did not set this value.
       Front-on or from behind the thigh points along the camera axis, so hip-vs-knee can't be measured (MediaPipe's
       3D estimate from behind was tried: it reads the same legal reps 0.33 L too deep, so it isn't used).
       From those views the "front" params below apply instead: hip drop = hip height above ankles at the bottom /
@@ -38,7 +35,7 @@ rules:
     required: true
     views: [side, front]
     params:
-      min_depth_ratio: -0.17     # pass if (hip_y - knee_y) / L >= this
+      min_depth_ratio: -0.08     # pass if (hip_y - knee_y) / L >= this
       borderline: 0.03           # missing the threshold by less than this -> low confidence (can't judge, not a no-rep)
       bottom_window_frames: 3    # deepest point taken over +/- this many frames around the bottom
       min_visibility: 0.6
@@ -63,7 +60,8 @@ rules:
     name: Reset after picking up the ball
     source: "Rulebook 9.8 p.26: not permitted to pick the ball up from the ground and immediately throw; after a drop, stand tall before the squat"
     rationale: >
-      A floor pick-up shows as both wrists below the knees. After it, the same stand-tall hold as WB-02 must
+      A floor pick-up shows as both wrists below a visible knee, or one visible low wrist and a detected held
+      ball below the knee. A ball position copied from the hands cannot confirm a pickup. After it, the same stand-tall hold as WB-02 must
       appear before the next squat bottom. Applies only to reps that follow a pick-up.
     tip: "After a drop, pick the ball up and stand all the way up before the next squat."
     required: true

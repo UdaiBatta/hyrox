@@ -14,7 +14,7 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.184,
+     "value": 0.179,
      "threshold": 0.3,
      "reason": "estimated from the front or behind: hip dropped to 0.18 of standing height",
      "cmp": "\u2264",
@@ -27,12 +27,19 @@
      "threshold": null,
      "reason": "clip starts too close to the first squat to see the start position"
     },
+    "WB-03": {
+     "status": "not_assessable",
+     "low_confidence": false,
+     "value": null,
+     "threshold": null,
+     "reason": "the hands or ball are hidden during a possible floor pickup"
+    },
     "WB-04": {
      "status": "not_assessable",
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -45,7 +52,8 @@
    "verdict": "uncertain",
    "failed": [],
    "unsure": [
-    "WB-02"
+    "WB-02",
+    "WB-03"
    ]
   },
   {
@@ -59,7 +67,7 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.191,
+     "value": 0.185,
      "threshold": 0.3,
      "reason": "estimated from the front or behind: hip dropped to 0.19 of standing height",
      "cmp": "\u2264",
@@ -70,7 +78,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -95,9 +103,9 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.206,
+     "value": 0.202,
      "threshold": 0.3,
-     "reason": "estimated from the front or behind: hip dropped to 0.21 of standing height",
+     "reason": "estimated from the front or behind: hip dropped to 0.20 of standing height",
      "cmp": "\u2264",
      "unit": "\u00d7 standing"
     },
@@ -106,7 +114,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -131,9 +139,9 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.198,
+     "value": 0.194,
      "threshold": 0.3,
-     "reason": "estimated from the front or behind: hip dropped to 0.20 of standing height",
+     "reason": "estimated from the front or behind: hip dropped to 0.19 of standing height",
      "cmp": "\u2264",
      "unit": "\u00d7 standing"
     },
@@ -142,7 +150,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -167,9 +175,9 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.192,
+     "value": 0.18,
      "threshold": 0.3,
-     "reason": "estimated from the front or behind: hip dropped to 0.19 of standing height",
+     "reason": "estimated from the front or behind: hip dropped to 0.18 of standing height",
      "cmp": "\u2264",
      "unit": "\u00d7 standing"
     },
@@ -178,7 +186,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -203,7 +211,7 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.203,
+     "value": 0.201,
      "threshold": 0.3,
      "reason": "estimated from the front or behind: hip dropped to 0.20 of standing height",
      "cmp": "\u2264",
@@ -214,7 +222,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -239,9 +247,9 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.208,
+     "value": 0.201,
      "threshold": 0.3,
-     "reason": "estimated from the front or behind: hip dropped to 0.21 of standing height",
+     "reason": "estimated from the front or behind: hip dropped to 0.20 of standing height",
      "cmp": "\u2264",
      "unit": "\u00d7 standing"
     },
@@ -250,7 +258,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -275,16 +283,16 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.197,
+     "value": 0.192,
      "threshold": 0.3,
-     "reason": "estimated from the front or behind: hip dropped to 0.20 of standing height",
+     "reason": "estimated from the front or behind: hip dropped to 0.19 of standing height",
      "cmp": "\u2264",
      "unit": "\u00d7 standing"
     },
     "WB-04": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.345,
+     "value": 0.335,
      "threshold": 0.6,
      "reason": "both hands on the ball at release"
     },
@@ -311,9 +319,9 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.196,
+     "value": 0.182,
      "threshold": 0.3,
-     "reason": "estimated from the front or behind: hip dropped to 0.20 of standing height",
+     "reason": "estimated from the front or behind: hip dropped to 0.18 of standing height",
      "cmp": "\u2264",
      "unit": "\u00d7 standing"
     },
@@ -322,7 +330,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -347,9 +355,9 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.217,
+     "value": 0.214,
      "threshold": 0.3,
-     "reason": "estimated from the front or behind: hip dropped to 0.22 of standing height",
+     "reason": "estimated from the front or behind: hip dropped to 0.21 of standing height",
      "cmp": "\u2264",
      "unit": "\u00d7 standing"
     },
@@ -358,7 +366,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -383,7 +391,7 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.175,
+     "value": 0.168,
      "threshold": 0.3,
      "reason": "estimated from the front or behind: hip dropped to 0.17 of standing height",
      "cmp": "\u2264",
@@ -394,7 +402,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -419,9 +427,9 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.173,
+     "value": 0.16,
      "threshold": 0.3,
-     "reason": "estimated from the front or behind: hip dropped to 0.17 of standing height",
+     "reason": "estimated from the front or behind: hip dropped to 0.16 of standing height",
      "cmp": "\u2264",
      "unit": "\u00d7 standing"
     },
@@ -430,7 +438,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -485,7 +493,8 @@
  "warnings": [
   "Filmed from the front or behind: hip and knee line up with the camera, so squat depth (WB-01) is estimated from how far the hip drops. It can confirm clearly deep reps but can't call a no-rep. Film side-on to judge depth properly.",
   "WB-02 Start standing tall: not assessable on 1/12 reps (clip starts too close to the first squat to see the start position).",
-  "WB-04 Two-handed throw: not assessable on 11/12 reps (a wrist is hidden at release).",
+  "WB-03 Reset after picking up the ball: not assessable on 1/12 reps (the hands or ball are hidden during a possible floor pickup).",
+  "WB-04 Two-handed throw: not assessable on 11/12 reps (release needs both wrists, the nose and a reliable leg length).",
   "WB-05 Ball reaches the target: not assessable on 12/12 reps (not assessable from this view (front or behind))."
  ],
  "ball": [

@@ -7,6 +7,7 @@ import gzip
 import json
 from pathlib import Path
 
+import numpy as np
 import yaml
 
 from . import rules, signals, summary
@@ -18,13 +19,28 @@ def load_config(path=RULES_YAML):
     return yaml.safe_load(Path(path).read_text(encoding="utf-8"))
 
 
-def analyze(data, cfg, flights=None):
-    """`flights`: per-throw ball summaries from ball.track (optional; without them WB-05 is "can't judge")."""
+def analyze(data, cfg, flights=None, track=None):
+    """Optional flights measure height. The ball track can corroborate floor pickups."""
     fps = data["fps"]
     raw = signals.to_array(data["frames"], data["n_frames"])
     P = signals.clean(raw, fps, cfg["camera_roll_deg"], data["width"], data["height"])
     B = signals.body(P)
-    B["seen"] = raw[:, :, 2]          # visibility as observed in the video (NaN where no pose): evidence, never bridged
+    B["observed"] = signals.evidence(raw, data, cfg, cfg["evidence_min_visibility"])
+    min_depth_vis = max(cfg["evidence_min_visibility"], cfg["rules"]["WB-01"]["params"]["min_visibility"])
+    hips_knees = signals.evidence(raw[:, signals.L_HIP:signals.R_KNEE + 1], data, cfg, min_depth_vis)
+    B["depth_pair"] = signals.visible_side(hips_knees, 0, 2)
+    # A cached held-ball point can also be the tracker's fallback (mean hand position rounded to 0.1 px).
+    B["held_y"] = np.full(len(raw), np.nan)
+    roll = np.radians(cfg["camera_roll_deg"])
+    for i, point in enumerate(track or []):
+        if point is None or point[3] != 1:
+            continue
+        x, y = point[:2]
+        hands = raw[i, 15:23, :2].mean(axis=0)
+        if (np.isfinite(hands).all() and not np.allclose(point[:2], hands, rtol=0, atol=0.050001)
+                and 0 <= x < data["width"] and 0 <= y < data["height"]):
+            B["held_y"][i] = (np.sin(roll) * (x - data["width"] / 2)
+                              + np.cos(roll) * (y - data["height"] / 2) + data["height"] / 2)
     view = signals.view(B, cfg["view"]["side_max_ratio"])
     reps, dips = signals.segment(B, fps, cfg["segmentation"])
     reps = rules.judge(B, reps, view, fps, cfg["rules"], {f["release"]: f for f in flights or []})
@@ -59,7 +75,7 @@ def run(src, out_dir, log=print):
         bt = ball.track(norm, data, [r["release"] for r in result["reps"]], log,
                         cfg["rules"]["WB-05"]["params"]["ball_diameter_m"])
         ball_path.write_bytes(gzip.compress(json.dumps(bt, separators=(",", ":")).encode()))
-    result = analyze(data, cfg, bt["flights"])
+    result = analyze(data, cfg, bt["flights"], bt["track"])
     result["ball"] = bt["track"]
     (out_dir / "analysis.json").write_text(json.dumps(result, indent=1), encoding="utf-8")
     return result

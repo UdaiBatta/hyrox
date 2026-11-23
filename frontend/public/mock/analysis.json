@@ -15,7 +15,7 @@
      "status": "pass",
      "low_confidence": false,
      "value": 0.129,
-     "threshold": -0.17,
+     "threshold": -0.08,
      "reason": "hip 0.13 L below knee at the bottom"
     },
     "WB-02": {
@@ -37,7 +37,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "ball isn't tracked by body pose (see Part 2)"
+     "reason": "ball not followed for enough of this throw"
     }
    },
    "verdict": "proper",
@@ -56,7 +56,7 @@
      "status": "pass",
      "low_confidence": false,
      "value": 0.129,
-     "threshold": -0.17,
+     "threshold": -0.08,
      "reason": "hip 0.13 L below knee at the bottom"
     },
     "WB-04": {
@@ -71,7 +71,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "ball isn't tracked by body pose (see Part 2)"
+     "reason": "ball not followed for enough of this throw"
     }
    },
    "verdict": "proper",
@@ -90,7 +90,7 @@
      "status": "fail",
      "low_confidence": false,
      "value": -0.304,
-     "threshold": -0.17,
+     "threshold": -0.08,
      "reason": "hip 0.30 L above knee at the bottom"
     },
     "WB-04": {
@@ -105,7 +105,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "ball isn't tracked by body pose (see Part 2)"
+     "reason": "ball not followed for enough of this throw"
     }
    },
    "verdict": "not_proper",
@@ -126,7 +126,7 @@
      "status": "pass",
      "low_confidence": false,
      "value": 0.129,
-     "threshold": -0.17,
+     "threshold": -0.08,
      "reason": "hip 0.13 L below knee at the bottom"
     },
     "WB-04": {
@@ -141,7 +141,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "ball isn't tracked by body pose (see Part 2)"
+     "reason": "ball not followed for enough of this throw"
     }
    },
    "verdict": "proper",
@@ -160,7 +160,7 @@
      "status": "pass",
      "low_confidence": false,
      "value": 0.129,
-     "threshold": -0.17,
+     "threshold": -0.08,
      "reason": "hip 0.13 L below knee at the bottom"
     },
     "WB-04": {
@@ -175,7 +175,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "ball isn't tracked by body pose (see Part 2)"
+     "reason": "ball not followed for enough of this throw"
     }
    },
    "verdict": "proper",
@@ -194,7 +194,7 @@
      "status": "pass",
      "low_confidence": false,
      "value": 0.129,
-     "threshold": -0.17,
+     "threshold": -0.08,
      "reason": "hip 0.13 L below knee at the bottom"
     },
     "WB-04": {
@@ -202,14 +202,14 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "ball isn't tracked by body pose (see Part 2)"
+     "reason": "ball not followed for enough of this throw"
     }
    },
    "verdict": "proper",
@@ -228,7 +228,7 @@
      "status": "pass",
      "low_confidence": false,
      "value": -0.052,
-     "threshold": -0.17,
+     "threshold": -0.08,
      "reason": "hip 0.05 L above knee at the bottom"
     },
     "WB-04": {
@@ -243,7 +243,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "ball isn't tracked by body pose (see Part 2)"
+     "reason": "ball not followed for enough of this throw"
     }
    },
    "verdict": "proper",
@@ -282,11 +282,13 @@
   "pauses": 0,
   "rest_s": 0,
   "takeaways": [
-   "1 of 7 reps failed WB-01 (Squat depth (hips below knees)). Sit deeper: hip crease clearly below the top of the knee before you drive up."
+   "1 of 7 reps failed WB-01 (Squat depth (hips below knees)). Sit deeper: hip crease clearly below the top of the knee before you drive up.",
+   "Your squats got shallower across the set (by 6% of leg length, first third vs last) before any rep failed. That is the first sign of fatigue: hold the depth.",
+   "Rep 7 was your shallowest and only just made depth (3% of leg length to spare). A judge could call that one. Sit a little deeper on every rep."
   ]
  },
  "warnings": [
-  "WB-04 Two-handed throw: not assessable on 1/7 reps (a wrist is hidden at release).",
-  "WB-05 Ball strikes the target: not assessable on 7/7 reps (ball isn't tracked by body pose (see Part 2))."
+  "WB-04 Two-handed throw: not assessable on 1/7 reps (release needs both wrists, the nose and a reliable leg length).",
+  "WB-05 Ball reaches the target: not assessable on 7/7 reps (ball not followed for enough of this throw)."
  ]
 }

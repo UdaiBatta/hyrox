@@ -1,0 +1,12 @@
+clip,t_bottom,depth
+C2c_side_shallow,0.83,shallow
+C2c_side_shallow,2.84,shallow
+C2c_side_shallow,4.84,shallow
+C2c_side_shallow,6.84,shallow
+C2d_side_borderline,1.47,borderline
+C2d_side_borderline,3.87,borderline
+C2e_side_deep,1.17,deep
+C2e_side_deep,3.67,deep
+C2e_side_deep,6.01,deep
+C2e_side_deep,8.51,deep
+C2f_side_shallow,0.65,shallow

@@ -14,16 +14,16 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.002,
-     "threshold": -0.17,
-     "reason": "hip 0.00 L below knee at the bottom"
+     "value": 0.034,
+     "threshold": -0.08,
+     "reason": "hip 0.03 L below knee at the bottom"
     },
     "WB-02": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.4,
+     "value": 0.7,
      "threshold": 0.2,
-     "reason": "stood tall for 0.40 s before rep 1"
+     "reason": "stood tall for 0.70 s before rep 1"
     },
     "WB-03": {
      "status": "fail",
@@ -37,7 +37,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -64,8 +64,8 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.028,
-     "threshold": -0.17,
+     "value": 0.025,
+     "threshold": -0.08,
      "reason": "hip 0.03 L below knee at the bottom"
     },
     "WB-04": {
@@ -73,7 +73,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -98,8 +98,8 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.044,
-     "threshold": -0.17,
+     "value": 0.037,
+     "threshold": -0.08,
      "reason": "hip 0.04 L below knee at the bottom"
     },
     "WB-04": {
@@ -107,7 +107,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -132,16 +132,16 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.026,
-     "threshold": -0.17,
-     "reason": "hip 0.03 L below knee at the bottom"
+     "value": 0.049,
+     "threshold": -0.08,
+     "reason": "hip 0.05 L below knee at the bottom"
     },
     "WB-04": {
      "status": "not_assessable",
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -166,16 +166,16 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.006,
-     "threshold": -0.17,
-     "reason": "hip 0.01 L below knee at the bottom"
+     "value": 0.023,
+     "threshold": -0.08,
+     "reason": "hip 0.02 L below knee at the bottom"
     },
     "WB-04": {
      "status": "not_assessable",
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -200,16 +200,16 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.017,
-     "threshold": -0.17,
-     "reason": "hip 0.02 L below knee at the bottom"
+     "value": 0.034,
+     "threshold": -0.08,
+     "reason": "hip 0.03 L below knee at the bottom"
     },
     "WB-04": {
      "status": "not_assessable",
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -234,16 +234,16 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.037,
-     "threshold": -0.17,
-     "reason": "hip 0.04 L below knee at the bottom"
+     "value": 0.032,
+     "threshold": -0.08,
+     "reason": "hip 0.03 L below knee at the bottom"
     },
     "WB-04": {
      "status": "not_assessable",
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -268,8 +268,8 @@
     "WB-01": {
      "status": "pass",
      "low_confidence": false,
-     "value": 0.025,
-     "threshold": -0.17,
+     "value": 0.021,
+     "threshold": -0.08,
      "reason": "hip 0.02 L below knee at the bottom"
     },
     "WB-04": {
@@ -277,7 +277,7 @@
      "low_confidence": false,
      "value": null,
      "threshold": null,
-     "reason": "a wrist is hidden at release"
+     "reason": "release needs both wrists, the nose and a reliable leg length"
     },
     "WB-05": {
      "status": "not_assessable",
@@ -317,8 +317,8 @@
    1.88
   ],
   "depth_thirds": [
-   0.01,
    0.03,
+   0.04,
    0.03
   ],
   "pauses": 0,
@@ -329,7 +329,7 @@
   ]
  },
  "warnings": [
-  "WB-04 Two-handed throw: not assessable on 8/8 reps (a wrist is hidden at release).",
+  "WB-04 Two-handed throw: not assessable on 8/8 reps (release needs both wrists, the nose and a reliable leg length).",
   "WB-05 Ball reaches the target: not assessable on 8/8 reps (ball track unreliable: size and gravity disagree on the scale (0.68x))."
  ],
  "ball": [

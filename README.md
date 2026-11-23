@@ -22,38 +22,89 @@ ball up and went straight into the squat without standing tall (WB-03).*
 
 ---
 
-## Run it
+## Windows setup
 
-Needs Python 3.11, Node 24 and `ffmpeg` on the PATH. The MediaPipe model
-([pose_landmarker_heavy.task](https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_heavy/float16/latest/pose_landmarker_heavy.task))
-goes in `backend/models/`.
+Use these steps on 64-bit Windows with PowerShell. The first setup needs an internet connection to download Python packages, the pose model and the browser app's dependencies. The app runs locally after setup. You can use a video elsewhere on your computer.
+
+### 1. Open the project folder
+
+In File Explorer, open the folder containing this README, `setup.ps1`, `backend` and `frontend`. Click the address bar, type `powershell` and press Enter. Run the commands below in that window. For the existing checkout on this computer you can also open PowerShell and run `Set-Location 'D:\projects\Hyrox'`.
+
+On a new computer, download the project ZIP **from the revision containing this setup guide**, extract it first, then open the extracted folder as above. Git users can clone the [repository](https://github.com/UdaiBatta/hyrox) and check out that revision.
+
+### 2. Install the tools once
+
+- **uv** manages Python 3.11 and installs the backend packages. In PowerShell run `winget install --id astral-sh.uv --exact`. [Official uv installation guide](https://docs.astral.sh/uv/getting-started/installation/)
+- **FFmpeg** reads video files. Run `winget install --id Gyan.FFmpeg --exact`. This installs both `ffmpeg` and `ffprobe`. If WinGet is unavailable, extract the Windows essentials build and add its `bin` directory to your user Path. [Windows FFmpeg builds](https://www.gyan.dev/ffmpeg/builds/)
+- **Node.js 24.x** runs the browser app and includes npm. Open the [official Node 24 downloads](https://nodejs.org/dist/latest-v24.x/), choose the Windows installer ending in `-x64.msi`, and keep the default npm and PATH options.
+- **curl.exe** downloads the pose model. Recent Windows versions include it. If `curl.exe --version` is unavailable, install the [Windows curl build](https://curl.se/windows/) and add its `bin` directory to your user Path.
+
+Close PowerShell, then reopen it from the project folder so it picks up the new tools. Each command below should print a version. If a command is missing, finish the matching install above before continuing.
 
 ```powershell
-cd backend
-py -3.11 -m venv .venv
-.venv\Scripts\pip install -r requirements.txt
-.venv\Scripts\python manage.py migrate
-.venv\Scripts\python manage.py runserver 127.0.0.1:8000
+uv --version
+ffmpeg -version
+ffprobe -version
+node --version
+npm.cmd --version
+curl.exe --version
 ```
+
+### 3. Set up the app
+
+From the folder containing `setup.ps1`, run:
 
 ```powershell
-cd frontend
-npm install
-npm run dev
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\setup.ps1
 ```
 
-Open http://localhost:5173, upload a clip (any from `clips/`), wait about a minute per minute of video, then play
-it back. Shortcuts: `Space` play, `←/→` frame step, `3` toggle 3D, `s` summary, `?` all shortcuts.
+The execution-policy option applies to this invocation only. Wait for **Setup complete**. The script installs the Python packages from `backend/uv.lock` in `backend/.venv`, obtaining Python 3.11 if needed. It downloads the versioned MediaPipe model into `backend/models` and verifies its SHA-256 checksum. It creates `backend/media/videos`, applies the SQLite migrations to `backend/db.sqlite3`, and installs the browser dependencies from `frontend/package-lock.json` with `npm ci`. You can rerun setup after an interrupted download or after updating the checkout.
 
-**Without the UI:** `python -m analysis.pipeline ../clips/C1b_side_gym.mp4` (from `backend/`) prints every rep,
-every rule result, the summary and the warnings.
+### Run a video from PowerShell
 
-**Tests:** `python manage.py test` (backend: a synthetic set with one shallow rep, summary takeaways, the ball
-tracker, the API) and `npm test` (frontend: playback state, 3D reconstruction).
+Start in the project folder. This example uses the CrossFit file on Udai's computer. In another checkout, change the quoted path to a real local video. The raw CrossFit file is distributed separately. The example stops with a message if the file is missing.
 
-**Evaluation:** `node eval/evaluate.ts` (repo root) scores the app against the hand labels in `eval/labels.csv`;
-`python ../eval/shallow_sweep.py` (from `backend/`) runs the shallow-rep test. Both read the analysed clips listed
-in `eval/clips.json`, so upload the clips first.
+```powershell
+$video = 'D:\projects\Hyrox\clips\raw\crossfit_full.mp4'
+if (!(Test-Path -LiteralPath $video -PathType Leaf)) { throw "Video missing: $video. Set the path to your own video." }
+Set-Location backend
+uv run --no-sync python -m analysis.pipeline "$video" --out "media/videos/crossfit_full_run"
+```
+
+Wait for a printed list of reps and verdicts. Open `backend/media/videos/crossfit_full_run/analysis.json` for the results. That folder also holds the normalized video and cached tracks. **Use a different output folder for each different video** because the CLI reuses tracks already in that folder. For a fresh analysis of the same source, choose a new folder name. CLI runs write files directly. Upload through the web app if you want a session in the browser's session list.
+
+### Open the web app
+
+Open **two PowerShell windows from the project folder** as in step 1. Leave both running.
+
+**Window 1** starts the backend:
+
+```powershell
+Set-Location backend
+uv run --no-sync python manage.py runserver 127.0.0.1:8000
+```
+
+**Window 2** starts the browser app:
+
+```powershell
+Set-Location frontend
+npm.cmd run dev -- --host 127.0.0.1 --port 5173 --strictPort
+```
+
+Open [the app](http://127.0.0.1:5173), upload your MP4, MOV or M4V (up to 500 MB), wait for processing, then open the session to play it. If a port is busy, stop the previous copy of that server with Ctrl+C and retry. To shut down the app, press Ctrl+C in both windows.
+
+### Verify the installation
+
+For a quick visual check on a fresh checkout, open [the bundled synthetic session](http://127.0.0.1:5173/sessions/mock?mock=1) while the frontend is running. Its playback data ships with the project. Use the upload flow above to exercise tracking on real footage.
+
+Open another PowerShell window **from the project folder**. The backend test processes a generated video through the API. The evaluation commands use the repository's cached tracks and labels. You can run them before uploading a video.
+
+```powershell
+uv run --project backend --no-sync python backend/manage.py test analysis.tests
+npm.cmd --prefix frontend test
+node eval/evaluate.ts
+uv run --project backend --no-sync python eval/depth_evaluate.py
+```
 
 ---
 
@@ -94,7 +145,7 @@ camera can't see say so and don't affect the verdict.
 
 | Rule | Standard | How it's measured | Threshold and why |
 |---|---|---|---|
-| **WB-01** Squat depth (required) | "hips must descend lower than their knees" | Side-on: hip joint centre vs knee joint centre at the bottom, in L. Front/back: hip height at the bottom ÷ standing hip height | **−0.17 L.** MediaPipe's hip point sits above the hip crease and its knee point below the top of the knee, so joint centre vs joint centre is stricter than a judge. Calibrated on CrossFit's official standard video (legal by definition): −0.10 to −0.15 L. A first guess of −0.03 failed all 9 legal reps. Front/back can only *confirm* clearly deep reps (≤ 0.27), never call a no-rep |
+| **WB-01** Squat depth (required) | "hips must descend lower than their knees" | Side-on compares a visible hip and knee on the same side at the bottom, normalized by observed leg length. Front/back uses hip height above the ankle relative to standing height on the same side. | **−0.08 L** for side-on. The nine legal C1 calibration reps measure −0.071 to −0.050 L. A miss of less than 0.03 L is borderline. From behind, the hip-drop ratio must be ≤ 0.27 to confirm depth. |
 | **WB-02** Start standing tall (required) | "start by standing tall (hips and knees extended)" | Hip and knee angles before rep 1 | ≥ 160° for ≥ 0.2 s. Full extension is 175–180°, pose jitter ±5–10° |
 | **WB-03** Reset after pick-up (required) | No pick-up and immediate throw | Both wrists below the knees = pick-up; then the same stand-tall check before the next squat | As WB-02 |
 | **WB-04** Two-handed throw (optional) | "throws the ball (with both hands)" | Both wrists above the nose and ≤ 0.6 L apart at release | The ball is ~0.4 L across. Optional because side-on the far wrist is hidden on practically every rep |
@@ -130,9 +181,9 @@ were made by stepping through every clip in 0.3 s stills and checking each botto
 | C1b gym | Side | 4 | **5** | 4 | 0 | 0 | **Miss:** the clip opens at the bottom of a squat. A peak at frame 0 can't be found, so that rep isn't counted (its throw is listed as "not counted"). Ball peaks 2.95–3.15 m against a 3 m target, all borderline, so not a no-rep |
 | C2a coach | Side | 6 | 6 | 5 | **1** | 0 | **WB-03 caught:** the coach picks the ball up and goes straight into the squat (0.00 s standing). Confirmed in the stills |
 | C2b coach | Side | 8 | 8 | 7 | **1** | 0 | **WB-03 caught** again on the rep after the pick-up. Confirmed in the stills |
-| C4a studio | Behind | 5 | 5 | 5 | 0 | 0 | Same athlete as C1 from behind. Depth confirmed from hip drop (0.23–0.25) |
+| C4a studio | Behind | 5 | 5 | 4 | 0 | 1 | Depth confirmed on all five. The opening standing hold extends outside the clip. |
 | C4b gym | Behind | 12 | 12 | 11 | 0 | 1 | Rep 1: the clip starts mid-set, so "started standing tall" can't be judged. Reps 8–9 are 1.3 s apart; the stills confirm two real, fast reps |
-| C4c Mixkit | Behind | 4 | 4 | 4 | 0 | 0 | Slow, steady set (3.3 s/rep) |
+| C4c Mixkit | Behind | 4 | 4 | 3 | 0 | 1 | Both ankles are cropped at the first squat bottom (2.29 s). Depth is unassessable. |
 
 ### Evaluation against the hand labels
 
@@ -142,45 +193,51 @@ were made by stepping through every clip in 0.3 s stills and checking each botto
 reps: 49 labelled, 1 missed by the app, 0 extra
 
                  app: good  no-rep  can't judge
-label good            45       0            1
+label good            43       0            3
 label no-rep           0       2            0
 
-verdict agreement: 47/47 decided reps (100%); the app decided 47/48 matched reps
+verdict agreement: 45/45 decided reps (100%); the app decided 45/48 matched reps
 no-reps caught with the right rule: 2/2
 ```
 
-**Read this with care.** The labels contain only 2 no-reps, both WB-03, and **no shallow squats**: none of the web
-footage has any. 100% agreement here shows that counting works and that the app doesn't invent no-reps. It does
-**not** show that WB-01 catches shallow squats. The labeller is the author, from stills, not a HYROX judge.
+The two no-reps in these seven clips are pickup faults. The author labelled this set from stills. Squat-depth
+performance is measured separately below.
+
+### Filmed squat-depth test
+
+Run `python eval/depth_evaluate.py` from the repo root with the backend environment. It reruns WB-01 on cached
+pose tracks, matches each labelled bottom within half a second and reports every missed or extra rep. The four
+excerpts and label sources are listed in [the clip inventory](clips/clips.md#filmed-squat-depth-benchmark).
+
+| Video label | Passed depth | Failed depth | Can't judge | Missed |
+|---|---:|---:|---:|---:|
+| Deep | 4 | 0 | 0 | 0 |
+| Borderline | 0 | 1 | 1 | 0 |
+| Shallow | 0 | 1 | 4 | 0 |
+
+All 11 throws were detected, with zero extras. The judge caught the full-body Open 13.3 no-rep. It abstained
+on all four shallow throws in the Open 12.4 close-up with weak knee observations. It issued a confident no-rep
+on one of two visually borderline throws (C2d, 3.87 s). These clips cover three athletes. The threshold was set
+on C1. The Open 12.4 close-up also informed the hidden-bottom fix, so this is a regression benchmark.
 
 ### Shallow-rep test (WB-01 on real tracking)
 
-With no real shallow squats available, [`eval/shallow_sweep.py`](eval/shallow_sweep.py) makes them. It takes every real
+[`eval/shallow_sweep.py`](eval/shallow_sweep.py) varies depth under controlled conditions. It takes every original
 side-on rep and raises the hips and upper body so the rep reaches only *k* of its real depth (knees and feet
 unchanged), then runs the unchanged pipeline.
 
-| Clip | Thigh at the bottom, real reps (joint centres, + = hip below knee) | Rep first flagged at *k* = | Still found at *k* = 0.4? |
-|---|---|---|---|
-| C1 studio | −25° to −19° | 0.9 (all no-reps by 0.8) | 9/9 |
-| C1b gym | +11° to +18° | 0.6 (all by 0.5) | 4/4 |
-| C2a coach | +1° to +7° | 0.6 (all by 0.5) | 6/6 |
-| C2b coach | −1° to +5° | 0.6 (all by 0.6) | 8/8 |
+| Clip | First confident depth failure at *k* = | Still found at *k* = 0.4? |
+|---|---|---|
+| C1 studio | 0.9 (all nine) | 9/9 |
+| C1b gym | 0.7 (all by 0.6) | 4/4 |
+| C2a coach | 0.7 (all six) | 6/6 |
+| C2b coach | 0.7 (all eight) | 8/8 |
 
-**What this shows:**
-1. **Shallow reps are never silently dropped.** Even a quarter squat (40% of real depth) is still segmented as a
-   rep, then called a no-rep.
-2. **WB-01 does fire on real, noisy keypoints**, not only on the synthetic test.
-3. **The weakness, measured:** the C1 athlete and the C2 coach both squat to about parallel in the stills, but
-   MediaPipe's joint centres put C1's thigh about 20° *above* horizontal and the coach's at about horizontal. The
-   threshold had to accept C1's legal reps, so a coach rep raised to 70% of its depth (a thigh about 15–20° above
-   parallel) still passes. **One fixed threshold can't be both safe for C1 and strict for C2.** The cause is where
-   MediaPipe places the hip point, which varies by athlete, clothing and camera height. Fixes, in order:
-   - a better hip landmark (RTMPose/ViTPose A/B, RESEARCH.md);
-   - a per-athlete check against a filmed known-parallel rep;
-   - a thigh IMU, which measures the angle directly (Part 2).
+All 27 original side-on reps remain detectable at 40% of the original hip drop. At 80% the nine studio reps
+fail and the six C2a coach reps pass. The sweep measures sensitivity to modifying coordinates for a given athlete.
 
 **Rule coverage** (how often each rule could be judged, from the app's warnings):
-- **WB-01 depth:** every rep. Side-on it's measured; from behind it's confirmed only.
+- **WB-01 depth:** 27/27 original side-on reps and 20/21 rear-view reps. The first Mixkit rep has no ankle reference.
 - **WB-04 two hands:** 0 of 27 side-on reps (far wrist hidden). From behind: 10 of 21.
 - **WB-05 target:** 11 of 27 side-on reps. On the two coach clips the two rulers disagree by a constant 0.62–0.68×,
   which points to an edited or slowed clip, so the app refuses to guess.
@@ -189,12 +246,9 @@ unchanged), then runs the unchanged pipeline.
 
 ## Failures and honest limits
 
-1. **No real shallow squat has been filmed.** WB-01's no-rep behaviour is shown only on shallowed copies of real
-   reps (above) and in the synthetic test. Filmed, labelled shallow reps are the next step, and the most important
-   one.
-2. **WB-01 is too lenient for some athletes** (measured above): with a single threshold, a rep about 15–20° above
-   parallel can pass for an athlete whose hip point MediaPipe places low. The calibration used only legal reps from
-   one athlete, so the threshold sits at the loosest value that passes them all.
+1. **Shallow-rep coverage is low.** WB-01 made a confident depth call on one of the five filmed shallow reps.
+2. **Borderline calls need further validation.** One of two visually borderline reps was confidently failed.
+   Independent labels on another full-body set would help determine how often this happens.
 3. **One labeller (the author), from stills.** No second labeller, so there's no human-vs-human ceiling. 49 reps
    across 7 web clips is a small set.
 4. **A rep whose bottom is the clip's first frame isn't counted** (C1b). Harmless on a real recording that starts
@@ -249,8 +303,7 @@ Bold rows are new. Breaks used to count every gap over 3 s, so C4c's steady 3.3 
 There is deliberately no "you had plenty of depth to spare" message. The margin is measured against a threshold whose
 offset varies by athlete (shallow-rep test above), so the app never tells anyone they can squat shallower.
 
-On the short web clips only the fault, close-call and projection messages appear (C1: "Rep 8 only just made depth,
-2% of leg length to spare"). The fatigue messages need a full set; they are covered by
+On the short web clips the app reports faults, close calls, coverage and projected pace. The fatigue messages need a full set and are covered by
 `backend/analysis/tests/test_pipeline.py` (`SummaryTest`).
 
 ---
@@ -265,11 +318,11 @@ On the short web clips only the fault, close-call and projection messages appear
 
 ## Next steps
 1. Film and label own side-on clips, including deliberate shallow reps, with a second labeller; add them to
-   `eval/labels.csv` and re-run `evaluate.ts`. Use them to re-set the WB-01 threshold from both legal and illegal
-   reps instead of legal reps only.
+   `eval/depth_labels.csv` and run `depth_evaluate.py`. Reserve a separate athlete or recording for the final
+   accuracy check before changing the threshold again.
 2. A/B MediaPipe vs RTMPose on the labelled reps (far-side accuracy).
 3. SAM 2 for ball segmentation; GVHMR for a world-grounded 3D body (RESEARCH.md §2).
-4. Strictness setting for WB-01 (strict / standard / lenient around the calibrated −0.17 L).
+4. Evaluate whether a strictness setting helps after collecting independent labels.
 5. Part 2 sensors: thigh and wrist IMUs first ([`docs/part2_imu_emg.md`](docs/part2_imu_emg.md)).
 
 ## Repo layout
