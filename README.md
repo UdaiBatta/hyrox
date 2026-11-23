@@ -141,7 +141,7 @@ camera can't see say so and don't affect the verdict.
 
 ![Rep detail: per-rule result, measured value vs threshold, and the reason](docs/img/session_side_full.png)
 
-### The rules ([`rules.yaml`](backend/analysis/rules.yaml), HYROX Singles Rulebook 2025/26, §9.8 pp. 26–27)
+### The rules ([`rules.yaml`](backend/analysis/rules.yaml), HYROX Singles Rulebook 26/27, §8.8 pp. 34–35, current season; wording unchanged from 2025/26 §9.8)
 
 | Rule | Standard | How it's measured | Threshold and why |
 |---|---|---|---|
@@ -329,13 +329,16 @@ On the short web clips the app reports faults, close calls, coverage and project
    - **Already reused:** video normalising, pose tracking, per-rep camera view, the overlay and 3D view, the summary,
      "can't judge" handling, and the evaluation scripts.
    - **New per station:** a rep-segmentation signal and a `rules.yaml` block.
-   - **The rules below are candidates.** Secondary sources conflict on details, so each rule needs confirming against
-     the official 2025/26 rulebook (§9.7 lunges, §9.4 burpee broad jumps) before thresholds are set.
+   - **Rules taken from the 26/27 Singles rulebook** (§8.7 Sandbag Lunge p.32–33, §8.4 Burpee Broad Jump p.29–30).
+     Thresholds would still need calibrating on labelled clips, as WB-01 was.
 
-   | Station | How reps are segmented | Candidate rules | What the camera will struggle with |
+   | Station | How reps are segmented | Rules (rulebook) | What the camera will struggle with |
    |---|---|---|---|
-   | **Sandbag Lunges** (100 m) | Alternating dips of each knee | Back knee touches the floor; standing upright between steps; sandbag across both shoulders | Side-on, the front leg hides the back knee at the bottom, so the knee-touch rule will often be "can't judge". A shin IMU fixes it (Part 2) |
-   | **Burpee Broad Jumps** (80 m) | Chest-to-floor dips followed by a forward jump | Chest to the floor (sources disagree on thighs); two-footed take-off and landing; standing up before the jump | The athlete travels across the frame, so the pixel scale changes and a panning camera breaks it. Jump distance needs a ruler, such as body height |
+   | **Sandbag Lunges** (100 m) | Alternating dips of each knee | Trailing knee clearly touches the ground; each rep ends standing tall, knees and hips extended; lunges alternate; no steps or shuffles between reps; the sandbag stays on the shoulders, fully supported, never set down (penalty codes 15 and 16: 15 s each) | Side-on, the front leg hides the trailing knee at the bottom, so the knee-touch rule will often be "can't judge". A shin IMU fixes it (Part 2) |
+   | **Burpee Broad Jumps** (80 m) | Chest-to-floor dips followed by a forward jump | Chest clearly touches the ground (nipple line; thighs not required); both feet take off and land together, at most 5 cm stagger; no extra steps or shuffles; feet not past the fingertips when stepping out; hands at most 30 cm ahead of the front toes and not moved forward once down. A knee may be used to get up | The athlete travels across the frame, so the pixel scale changes and a panning camera breaks it. The 5 cm and 30 cm limits need a ruler, such as the athlete's height, and are near the limit of what pose tracking can resolve |
+
+   Unlike wall balls (no warnings: rep or no-rep), lunges and burpee broad jumps get a warning first, then 15 s per
+   infringement, so the app would report infringements rather than redone reps.
 
    - **Clips:** 2–3 clips per station, as for Wall Balls, including visibly bad reps (knee not touching, a step
      instead of a jump), labelled with `eval/` like the depth set.

@@ -40,7 +40,7 @@ const LIMITS = [
   { icon: EyeOff, title: 'Hidden limbs', text: 'If a wrist or knee is hidden at the moment that matters, the rep is marked "can\'t judge" instead of guessed.' },
 ]
 
-// The movement standard, crawling like a scoreboard ticker (2025/26 rulebook, section 9.8).
+// The movement standard, crawling like a scoreboard ticker (2026/27 rulebook, section 8.8).
 const TICKER = ['Hips below knees', 'Start standing tall', 'Both hands on the ball', 'Target 3.00 m men · 2.70 m women',
   'Ball 6 kg men · 4 kg women', 'Missed target = no rep', 'No warnings: every no-rep is called']
 
@@ -121,7 +121,7 @@ export function Landing() {
       <section id="rules" className="scroll-mt-20 border-y bg-card/40">
         <div className="mx-auto max-w-7xl px-6 py-24">
           <SectionHead n="02" kicker="The rules" title="The judge's card."
-            aside="Written from the 2025/26 rulebook, section 9.8. Every threshold lives in one file." />
+            aside="Written from the 2026/27 rulebook, section 8.8. Every threshold lives in one file." />
           <div className="mt-12 grid gap-6 lg:grid-cols-[1fr_340px]">
             <ul className="divide-y overflow-hidden rounded-xl border bg-card">
               {RULE_IDS.map((id) => (

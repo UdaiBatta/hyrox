@@ -12,7 +12,7 @@
 
 ## 1. Problem and goal
 
-HYROX judges call wall-ball no-reps by eye. Each missed rep costs a **15 s penalty** (Rulebook 25/26, p.27 and code 015 on p.32). Athletes training alone get no feedback on which reps would have been no-reps, or on when their form breaks down.
+HYROX judges call wall-ball no-reps by eye. Every no-rep has to be redone, and leaving before 100 valid reps is a disqualification (Rulebook 26/27, §8.8 p.36 and code 09 on p.45; there are no warnings at wall balls). Athletes training alone get no feedback on which reps would have been no-reps, or on when their form breaks down.
 
 **Goal:** upload a recorded wall-ball set and get:
 1. an accurate rep count,
@@ -69,13 +69,13 @@ A phone or tablet films the athlete at each of the 8 stations. On screen:
 
 ## 4. Movement standard (source of truth)
 
-From *HYROX Singles Rulebook, Season 2025/26, R1, §9.8 Wall Balls*, pp.26–27:
+From *HYROX Singles Rulebook, Season 2025/26, R1, §9.8 Wall Balls*, pp.26–27 (re-checked 2026-11-23 against the current *26/27* rulebook, §8.8 pp.34–35: same wording):
 
 - Start: "standing tall (hips and knees extended), holding the wall ball with both hands". Picking the ball up from the ground and throwing it straight away is not allowed.
 - "squats below parallel and throws the ball (with both hands) as they stand up, striking the correct target … counted as one repetition."
 - Depth: "the racer's hips must descend lower than their knees (also known as; below parallel or below 90°)."
 - After the ball hits the target, the racer either catches it and starts the next rep, or lets it hit the ground and **stands tall again before squatting**. Catching it after a bounce and carrying on is not allowed.
-- Any breach → "no rep". "No warnings are given, it is either a rep or a no-rep." Each missing rep → 15 s penalty.
+- Any breach → "no rep". "No warnings are given, it is either a rep or a no-rep." A no-rep must be redone; leaving with fewer than 100 valid reps is a DQ (26/27 code 09).
 - Target height: women and women pro **2.70 m**, men and men pro **3.00 m**. Ball weight: women 4 kg; women pro and men 6 kg; men pro 9 kg. 100 reps.
 - Digital targets register strikes automatically. **The judge assesses the starting position and squat depth** (p.27, Note 1). These are the two things our pose rules mirror most directly.
 - §13.5 (p.34): any deviation from the movement standard → no rep.
@@ -418,7 +418,8 @@ Order matters: **the CLI pipeline works before any UI.** If time runs out, the C
 
 ## 15. Sources
 
-- HYROX Singles Rulebook 2025/26 R1: §9.8 Wall Balls pp.26–27; penalties p.32 (code 015); §13.2, §13.5 p.34. <https://hyroxdach.com/wp-content/uploads/2025/06/25_26-Singles-Rulebook_en_R1.pdf>
+- HYROX Singles Rulebook 26/27 (current season): §8.8 Wall Balls pp.34–36; §12.5 penalty codes p.45. <https://hyrox.co.in/rulebooks/>
+- HYROX Singles Rulebook 2025/26 R1 (first draft of the rules): §9.8 Wall Balls pp.26–27; penalties p.32 (code 015); §13.2, §13.5 p.34. <https://hyroxdach.com/wp-content/uploads/2025/06/25_26-Singles-Rulebook_en_R1.pdf>
 - Centr, "Wall ball rulebook: what judges watch every HYROX rep": <https://centr.com/blog/show/f429ca4a-3798-494f-9924-d02c7440a83f/wall-ball-rulebook-what-judges-watch-every-hyrox-rep>
 - Sundried, "HYROX penalties and movement standards: a judge's guide": <https://www.sundried.com/blogs/guide/hyrox-penalties-and-movement-standards-a-judges-guide>
 - Roxlyfe, HYROX wall balls guide: <https://roxlyfe.com/hyrox-wall-balls-guide/>

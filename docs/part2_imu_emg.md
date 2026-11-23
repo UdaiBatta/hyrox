@@ -48,8 +48,8 @@ assumption.
 asymmetry, and **one** EMG channel on the quad adds the fatigue trend. EMG is coaching value only. I would not let it
 decide a rep.
 
-*Not built, for comparison:* in Sandbag Lunges the key no-rep is the back knee not touching the floor, which the front
-leg often hides from one camera. A thigh + shin IMU on each leg would measure that directly.
+*Not built, for comparison:* in Sandbag Lunges the rulebook requires the trailing knee to "clearly touch the ground"
+(§8.7), and the front leg often hides it from one camera. A thigh + shin IMU on each leg would measure that directly.
 
 ## 4. Fusion approach
 
@@ -109,9 +109,9 @@ The thigh IMU defines the rep timeline once synced, because it is denser and nev
 - **Thigh angle vs the judge's rule:** how a thigh angle maps to "hip crease below the top of the knee" needs
   calibrating per athlete.
 - **Hand speed at release vs ball speed:** whether they are equal enough for the throw-height estimate.
-- **Rep count and ball contact:** whether Women Open does 100 reps or 75 (secondary sources conflict), and whether a
-  hit means the ball's top or its centre reaching the line. Part 1 assumes top; one source says centre. Both need the
-  official rulebook.
+- **What "strike the target" means in centimetres:** the 26/27 rulebook (§8.8) requires the ball to strike the target
+  "in the strike zone" at 3.00 m / 2.70 m but doesn't give the zone's size. Part 1 counts the ball's top reaching the
+  stated height as a hit. (It also confirms 100 reps for every division, settling a conflict in secondary sources.)
 
 ## References
 1. Cifrek M, Medved V, Tonković S, Ostojić S. Surface EMG based muscle fatigue evaluation in biomechanics. *Clin Biomech* 2009;24(4):327–340.

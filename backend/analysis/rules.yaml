@@ -2,7 +2,8 @@
 #
 # Units: L = the athlete's leg length in pixels (hip->knee + knee->ankle), measured per rep,
 # so thresholds don't depend on camera distance. Angles in degrees, times in seconds.
-# Primary source: HYROX Singles Rulebook 2025/26 R1, section 9.8 Wall Balls, pp.26-27.
+# Primary source: HYROX Singles Rulebook 26/27, section 8.8 Wall Balls, pp.34-35 (checked 2026-11-23; the wording
+# quoted below is unchanged from the 2025/26 edition, section 9.8, which the thresholds were first written from).
 
 camera_roll_deg: 0        # calibration for a crooked clip: rotates keypoints (positive = clockwise on screen)
 evidence_min_visibility: 0.5  # exclude weak or off-screen landmarks before smoothing evidence for any rule
@@ -17,7 +18,7 @@ segmentation:
 rules:
   WB-01:
     name: Squat depth (hips below knees)
-    source: "Rulebook 9.8 p.26: 'the racer's hips must descend lower than their knees (also known as; below parallel or below 90 deg)'"
+    source: "Rulebook 26/27 8.8 p.34: 'the racer's hips must descend lower than their knees (also known as; below parallel or below 90 deg)'"
     rationale: >
       MediaPipe's hip point is the hip-joint centre (above the hip crease) and its knee point is the knee-joint
       centre (below the top of the knee). Joint centre below joint centre is stricter than a judge's crease-below-knee,
@@ -47,7 +48,7 @@ rules:
 
   WB-02:
     name: Start standing tall
-    source: "Rulebook 9.8 p.26: 'The racer must start by standing tall (hips and knees extended), holding the wall ball with both hands'"
+    source: "Rulebook 26/27 8.8 p.34: 'The racer must start by standing tall (hips and knees extended), holding the wall ball with both hands'"
     rationale: >
       Full extension is ~175-180 deg; pose jitter is +/-5-10 deg, so 160 deg separates upright from a quarter squat.
       0.2 s rules out a single noisy frame. Checked before rep 1 only.
@@ -58,7 +59,7 @@ rules:
 
   WB-03:
     name: Reset after picking up the ball
-    source: "Rulebook 9.8 p.26: not permitted to pick the ball up from the ground and immediately throw; after a drop, stand tall before the squat"
+    source: "Rulebook 26/27 8.8 p.34: not permitted to pick the ball up from the ground and immediately throw; after a drop, stand tall before the squat"
     rationale: >
       A floor pick-up shows as both wrists below a visible knee, or one visible low wrist and a detected held
       ball below the knee. A ball position copied from the hands cannot confirm a pickup. After it, the same stand-tall hold as WB-02 must
@@ -70,7 +71,7 @@ rules:
 
   WB-04:
     name: Two-handed throw
-    source: "Rulebook 9.8 p.26: 'throws the ball (with both hands)'"
+    source: "Rulebook 26/27 8.8 p.34: 'throws the ball with both hands striking the correct target'"
     rationale: >
       At release (highest wrist point) both wrists must be above the nose and close together. A ball is ~35 cm across
       and L is ~85 cm, so hands on the ball are ~0.4 L apart; 0.6 L leaves margin. Side-on the far wrist is hidden
@@ -83,14 +84,16 @@ rules:
 
   WB-05:
     name: Ball reaches the target
-    source: "Rulebook 9.8 pp.26-27: throw must strike the target; 3.00 m men / 2.70 m women"
+    source: "Rulebook 26/27 8.8 pp.34-35: 'each wall ball throw must strike the designated target'; 3.00 m men / men pro, 2.70 m women / women pro"
     rationale: >
       The ball is tracked from the video (pipeline/ball.py) and its peak height measured in metres. Pixels become
       metres with the ball's own diameter (the measuring ruler); gravity (the curvature of its flight) checks it.
       Agree within ruler_tolerance or "can't judge"; more than half that apart = too close to call. (Averaging
       the two was tried and leaked the gravity fit's noise into the height: a 3.0 m throw read 2.71 m.) Checked on C1b (side-on
-      gym, men's 3 m target): rulers agree within 13-18%, peaks 2.98-3.17 m. Assumption: "target height" is the line
-      the ball's top must reach (the rulebook gives heights, not the target's size). Side-on only: from the front or
+      gym, men's 3 m target): rulers agree within 13-18%, peaks 2.98-3.17 m. Assumption: the rulebook says the
+      ball must strike the target "in the strike zone" and gives the target height but not the zone's size, so a hit
+      is taken as the ball's top reaching the target height (a ball that touches the target's lower edge has struck
+      it). A secondary source says the ball's centre must cross a line; the 26/27 rulebook does not say so. Side-on only: from the front or
       behind the target is at a different distance from the camera than the athlete's feet. Height is checked, not
       left/right aim, and a digital target registers the hit anyway. Not required: a confident miss is a no-rep, an
       untracked throw doesn't make the rep uncertain.
