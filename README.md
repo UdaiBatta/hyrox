@@ -324,6 +324,21 @@ On the short web clips the app reports faults, close calls, coverage and project
 3. SAM 2 for ball segmentation; GVHMR for a world-grounded 3D body (RESEARCH.md §2).
 4. Evaluate whether a strictness setting helps after collecting independent labels.
 5. Part 2 sensors: thigh and wrist IMUs first ([`docs/part2_imu_emg.md`](docs/part2_imu_emg.md)).
+6. **More stations: Sandbag Lunges, then Burpee Broad Jumps** (the brief's stretch goal, left out on purpose so one
+   station could be done properly).
+   - **Already reused:** video normalising, pose tracking, per-rep camera view, the overlay and 3D view, the summary,
+     "can't judge" handling, and the evaluation scripts.
+   - **New per station:** a rep-segmentation signal and a `rules.yaml` block.
+   - **The rules below are candidates.** Secondary sources conflict on details, so each rule needs confirming against
+     the official 2025/26 rulebook (§9.7 lunges, §9.4 burpee broad jumps) before thresholds are set.
+
+   | Station | How reps are segmented | Candidate rules | What the camera will struggle with |
+   |---|---|---|---|
+   | **Sandbag Lunges** (100 m) | Alternating dips of each knee | Back knee touches the floor; standing upright between steps; sandbag across both shoulders | Side-on, the front leg hides the back knee at the bottom, so the knee-touch rule will often be "can't judge". A shin IMU fixes it (Part 2) |
+   | **Burpee Broad Jumps** (80 m) | Chest-to-floor dips followed by a forward jump | Chest to the floor (sources disagree on thighs); two-footed take-off and landing; standing up before the jump | The athlete travels across the frame, so the pixel scale changes and a panning camera breaks it. Jump distance needs a ruler, such as body height |
+
+   - **Clips:** 2–3 clips per station, as for Wall Balls, including visibly bad reps (knee not touching, a step
+     instead of a jump), labelled with `eval/` like the depth set.
 
 ## Repo layout
 ```
