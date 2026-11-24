@@ -416,7 +416,7 @@ On the short web clips the app reports faults, close calls, coverage and project
 
 ## Repo layout
 ```
-backend/   Django + DRF API, background job, analysis/pipeline/ (pose, signals, ball, rules, summary), rules.yaml, tests
+backend/   Django + DRF API, background job, analysis/pipeline/ (s1_ingest → s2_pose → s3_signals → s4_ball → s5_rules → s6_summary), rules.yaml, tests
 frontend/  React 19 + TypeScript (strict) + Vite + Tailwind + shadcn/ui + three.js (react-three-fiber)
 clips/     test clips and their sources
 eval/      hand labels, evaluate.ts (agreement), shallow_sweep.py (WB-01 shallow-rep test)

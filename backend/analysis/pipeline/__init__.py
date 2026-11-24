@@ -10,7 +10,7 @@ from pathlib import Path
 import numpy as np
 import yaml
 
-from . import rules, signals, summary
+from . import s3_signals as signals, s5_rules as rules, s6_summary as summary
 
 RULES_YAML = Path(__file__).resolve().parents[1] / "rules.yaml"
 
@@ -58,7 +58,7 @@ def analyze(data, cfg, flights=None, track=None):
 def run(src, out_dir, log=print):
     """Delete out_dir to force re-tracking; otherwise only stages 3-8 re-run. Delete ball.json.gz to re-track the ball
     (needed if rep detection changes, since the ball tracker starts each flight at a release frame)."""
-    from . import ball, ingest, pose   # heavy imports only when tracking is needed
+    from . import s1_ingest as ingest, s2_pose as pose, s4_ball as ball   # heavy imports only when tracking is needed
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     norm, frames_path = out_dir / "normalized.mp4", out_dir / "frames.json.gz"

@@ -6,7 +6,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-from analysis.pipeline import ball, load_config, rules
+from analysis.pipeline import load_config, s4_ball as ball, s5_rules as rules
 
 R = 38                      # ball radius px = 0.19 x leg (200 px)
 HANDS = (300, 200)

@@ -86,7 +86,7 @@ rules:
     name: Ball reaches the target
     source: "Rulebook 26/27 8.8 pp.34-35: 'each wall ball throw must strike the designated target'; 3.00 m men / men pro, 2.70 m women / women pro"
     rationale: >
-      The ball is tracked from the video (pipeline/ball.py) and its peak height measured in metres. Pixels become
+      The ball is tracked from the video (pipeline/s4_ball.py) and its peak height measured in metres. Pixels become
       metres with the ball's own diameter (the measuring ruler); gravity (the curvature of its flight) checks it.
       Agree within ruler_tolerance or "can't judge"; more than half that apart = too close to call. (Averaging
       the two was tried and leaked the gravity fit's noise into the height: a 3.0 m throw read 2.71 m.) Checked on C1b (side-on

@@ -1,4 +1,4 @@
-"""Stage 2b: where the wall ball is in each frame, using the body and gravity as references.
+"""Stage 6: where the wall ball is in each frame, using the body and gravity as references.
 
 A generic object detector (MediaPipe EfficientDet, COCO "sports ball") found the medicine ball in 0-40% of frames
 on our clips, and plain circle-finding latched onto weight plates in gyms. What we know instead:

@@ -133,7 +133,7 @@ A single camera **cannot measure true distance from the lens**. MediaPipe output
 
 - **Side view:** depth from 2D image points.
 - **Front / back view:** hip-vs-knee can't be measured (the thigh points along the camera axis). WB-01 falls back to a **hip-drop estimate**: hip height above the ankles at the bottom ÷ standing hip height, pass if ≤ 0.27 (0.30 − 0.03 borderline). Perspective makes squats look deeper from behind (same CrossFit athlete: 0.33–0.38 side-on, 0.23–0.25 from behind), so it can only **confirm** a clearly deep rep; anything else is `not_assessable`, never a no-rep. MediaPipe's 3D world estimate was tested and rejected (reads legal reps 0.33 L too deep from behind). Exact depth from any angle is carried into Part 2 (an IMU on the thigh measures its angle directly).
-- **Ball tracking (display only, `pipeline/ball.py`, cached in `ball.json.gz`):** MediaPipe's COCO object detector found the medicine ball in only 0–40% of frames, and plain circle-finding latched onto gym plates. Instead the body is the reference: ball radius ≈ 0.19 × leg length; while held it's searched for only at the hands (fallback: the hands); from each rep's release it's followed by a **Kalman filter with gravity** (seeded from the first two sightings; 3σ gate; moving, ball-sized blobs above the shoulders with the athlete blanked out), caught when the predicted path returns to the hands (≤ 1.2 s), then smoothed backwards (Rauch–Tung–Striebel). Results and lessons: RESEARCH.md §3. Lost = hidden, never guessed. Shown as a ring on the video and a blue sphere in 3D (depth = hands' depth; in flight assumed). In flight a gravity parabola is fitted through the sightings: it fills gaps (blur, top of frame), removes stray detections, and — when its gravity matches the ball's size — carries the ring on to the catch (state 2, drawn dotted as "estimated"). Feeds WB-05.
+- **Ball tracking (display only, `pipeline/s4_ball.py`, cached in `ball.json.gz`):** MediaPipe's COCO object detector found the medicine ball in only 0–40% of frames, and plain circle-finding latched onto gym plates. Instead the body is the reference: ball radius ≈ 0.19 × leg length; while held it's searched for only at the hands (fallback: the hands); from each rep's release it's followed by a **Kalman filter with gravity** (seeded from the first two sightings; 3σ gate; moving, ball-sized blobs above the shoulders with the athlete blanked out), caught when the predicted path returns to the hands (≤ 1.2 s), then smoothed backwards (Rauch–Tung–Striebel). Results and lessons: RESEARCH.md §3. Lost = hidden, never guessed. Shown as a ring on the video and a blue sphere in 3D (depth = hands' depth; in flight assumed). In flight a gravity parabola is fitted through the sightings: it fills gaps (blur, top of frame), removes stray detections, and — when its gravity matches the ball's size — carries the ring on to the catch (state 2, drawn dotted as "estimated"). Feeds WB-05.
 
 **Corrections applied before any rule runs** (1 and 2 are hardcoded design decisions; only the roll is configurable):
 
@@ -151,7 +151,7 @@ Conventions: image coordinates, y grows downward, after the corrections above. T
 | **WB-02** | Standing tall at the start | p.26 start bullet | Before the first descent: max knee angle (hip-knee-ankle) ≥ T and hip angle (shoulder-hip-knee) ≥ T, held ≥ 0.2 s | **T = 160°** | Full extension is about 175–180°; pose jitter is ±5–10°; 160° separates "upright" from "quarter squat" | Side ✅ / front ⚠️ (knee angle OK, hip angle foreshortened) |
 | **WB-03** | Reset after a drop (no pick-up-and-throw, no continuing after a bounce) | p.26 start and after-target bullets | If both wrists go below the knees between reps (ball picked up from the floor), the next rep needs a WB-02 stand-tall window between pick-up and descent | same T, 0.2 s | Pick-up-and-throw shows as wrists low → straight into a squat with no extended window | Side ✅ / front ✅ |
 | **WB-04** | Two-handed throw | p.26 squat-and-throw bullet | At the release frame (wrist apex after the bottom): `wrist_dist / L ≤ 0.6` **and** both wrists above the nose | 0.6 L | A ball is ~35 cm across and L ~85 cm, so hands on a ball sit ~0.4 L apart; 0.6 leaves margin. L instead of shoulder width because side-on the shoulders overlap and their width collapses to ~0 | Front ✅ / side ⚠️: the far wrist is hidden on practically every side-on rep, so this rule is **not required** (a visible fail still = no-rep; hidden → warning, not uncertain) |
-| **WB-05** | Ball reaches the target height | p.26 target bullet, p.27 heights | Ball tracked from video (`pipeline/ball.py`); peak height of the ball's top edge in metres, from the floor (ankles + 0.08 m). Pixels → metres by **two independent rulers**: the ball's diameter (0.35 m) and gravity (flight curvature = 9.81 m/s²); used only if they agree within 25% | **pass if peak ≥ 3.00 m men / 2.70 m women**; within 0.15 m → too close to call; ball left the top of the frame above the target → pass; rulers disagree / < 6 flight points → can't judge | Verified on C1b: rulers agree within 13–18%, peaks 2.90–3.15 m (men's 3 m target). Height only; left/right aim not checked. Not required: a confident miss is a no-rep | Side ✅ / front ❌ (target at a different depth) |
+| **WB-05** | Ball reaches the target height | p.26 target bullet, p.27 heights | Ball tracked from video (`pipeline/s4_ball.py`); peak height of the ball's top edge in metres, from the floor (ankles + 0.08 m). Pixels → metres by **two independent rulers**: the ball's diameter (0.35 m) and gravity (flight curvature = 9.81 m/s²); used only if they agree within 25% | **pass if peak ≥ 3.00 m men / 2.70 m women**; within 0.15 m → too close to call; ball left the top of the frame above the target → pass; rulers disagree / < 6 flight points → can't judge | Verified on C1b: rulers agree within 13–18%, peaks 2.90–3.15 m (men's 3 m target). Height only; left/right aim not checked. Not required: a confident miss is a no-rep | Side ✅ / front ❌ (target at a different depth) |
 
 **Rep verdict:**
 - `not_proper`: any rule returns a confident `fail` (required or not).
@@ -207,7 +207,7 @@ upload ──► │ 1 ingest  → 2 pose → 3 clean → 4 view/quality → 5 s
 | 3 | **Clean** | Roll correction (`camera_roll_deg`); gaps ≤ 5 frames linearly interpolated; Savitzky–Golay smoothing (window ≈ 0.15 s, order 2; `scipy.signal.savgol_filter`) on x and y; L/R-averaged hip, knee and ankle series (§6.0); raw values kept for display | `frames_clean` |
 | 4 | **View and quality** | View from torso geometry: `r = shoulder_width / torso_length`. r < 0.5 → side, otherwise front (median over the clip; threshold in yaml). Each rule declares the views it can judge; other views give `not_assessable`. Per-frame quality = mean visibility of hips, knees, ankles, wrists | `view`, per-frame `quality` |
 | 5 | **Segment reps** | Signal `s(t)` = L/R-averaged hip y / clip-median L (per-rep L is applied later, in the rules). Bottoms = `scipy.signal.find_peaks(s, prominence ≥ 0.25, distance ≥ 0.8 s)`. Rep start = the last local minimum of `s` (standing) before the bottom; rep end = release frame (min wrist y after the bottom) or the next start. A rep must have its descent and ascent inside the clip | `reps[]` with start / bottom / release / end frames |
-| 6 | **Rules** | `rules.py`: one small function per rule ID, reading params from yaml, returning `{status, value, threshold, reason}` | per rep, per rule results |
+| 6 | **Rules** | `s5_rules.py`: one small function per rule ID, reading params from yaml, returning `{status, value, threshold, reason}` | per rep, per rule results |
 | 7 | **Verdicts** | Aggregation as in §6.1 | `rep.verdict`, `rep.failed_rules[]` |
 | 8 | **Summary** | Totals, proper / not / uncertain counts, fault histogram, cycle-time series with a first-third vs last-third comparison, depth margin by thirds, pauses. **Takeaways are deterministic templates** chosen by thresholds (for example: if last-third depth fails are at least twice the first-third rate → "Your depth faded after rep N; slow the descent once you hit rep N."). No LLM | `summary{}` |
 
@@ -251,11 +251,12 @@ backend/
     models.py        Video
     views.py         DRF viewsets
     pipeline/
-      ingest.py      ffmpeg/ffprobe
-      pose.py        MediaPipe → frames.json.gz
-      signals.py     clean, view, segment
-      rules.py       one function per rule id
-      summary.py
+      s1_ingest.py   ffmpeg/ffprobe
+      s2_pose.py     MediaPipe → frames.json.gz
+      s3_signals.py  clean, view, segment
+      s4_ball.py     ball tracking (Kalman + RTS)
+      s5_rules.py    one function per rule id
+      s6_summary.py  end-of-set summary
     rules.yaml       ← every threshold lives here
     tests/test_pipeline.py
   media/videos/{id}/ original.mp4, normalized.mp4, frames.json.gz, analysis.json
@@ -375,8 +376,8 @@ Hyrox/
 
 | When | Work | Done when |
 |---|---|---|
-| **Sat 21 pm** | Record C1–C4; trim; write labels CSVs. Python venv; `pose.py` + `signals.py` as a CLI on one clip; plot the hip signal | Reps found on C1 |
-| **Sat 21 eve** | `rules.yaml` + `rules.py` + `summary.py`; calibrate WB-01 on C1/C2; synthetic test | Verdicts printed for C1–C4 |
+| **Sat 21 pm** | Record C1–C4; trim; write labels CSVs. Python venv; `s2_pose.py` + `s3_signals.py` as a CLI on one clip; plot the hip signal | Reps found on C1 |
+| **Sat 21 eve** | `rules.yaml` + `s5_rules.py` + `s6_summary.py`; calibrate WB-01 on C1/C2; synthetic test | Verdicts printed for C1–C4 |
 | **Sun 22 am** | Django project, model, endpoints, thread worker | curl flow works |
 | **Sun 22 pm** | Vite + shadcn scaffold; upload/library; video overlay + sync; HUD; timeline | Live counter and verdicts on screen |
 | **Sun 22 eve** | 3D skeleton; summary sheet + charts | Full UI on all clips |

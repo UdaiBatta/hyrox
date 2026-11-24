@@ -1,11 +1,11 @@
-"""Stages 6-7: one function per rule ID, then the rep verdict.
+"""Stage 7: one function per rule ID, then the rep verdict.
 
 Every threshold comes from rules.yaml; nothing numeric about the movement standard is hardcoded here.
 Each rule returns {status: pass|fail|not_assessable, low_confidence, value, threshold, reason}.
 """
 import numpy as np
 
-from . import signals
+from . import s3_signals as signals
 
 
 def _res(status, reason, value=None, threshold=None, low=False):

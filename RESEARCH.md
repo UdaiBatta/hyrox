@@ -116,7 +116,7 @@ target on our own recordings.
 - **Part 2 link:** a thigh IMU measures depth from any camera angle. That removes the front/back depth guess that
   no single-camera method fully solves.
 
-## 3. Result: gravity Kalman tracker (implemented 2026-11-22, `backend/analysis/pipeline/ball.py`)
+## 3. Result: gravity Kalman tracker (implemented 2026-11-22, `backend/analysis/pipeline/s4_ball.py`)
 
 **What was built:**
 - State `[x, y, vx, vy]`, with gravity as a known acceleration (from the ball-size ruler).

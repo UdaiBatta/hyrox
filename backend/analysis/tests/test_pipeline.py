@@ -121,7 +121,7 @@ if __name__ == "__main__":
 class SummaryTest(unittest.TestCase):
     """Takeaways that the short web clips never trigger: depth creeping up, breaks vs a slow steady pace."""
     def _reps(self, depths, gaps_s):
-        from analysis.pipeline import summary
+        from analysis.pipeline import s6_summary as summary
         t, reps = 0.0, []
         for n, (d, g) in enumerate(zip(depths, gaps_s), 1):
             t += g
@@ -142,7 +142,7 @@ class SummaryTest(unittest.TestCase):
 
 class FrontViewDepthTest(unittest.TestCase):
     def test_hip_drop_can_pass_but_never_fails(self):
-        from analysis.pipeline import rules
+        from analysis.pipeline import s5_rules as rules
         p = load_config()["rules"]["WB-01"]["params"]
         rep = {"start": 0, "bottom": 10, "release": 15, "end": 20}
         ctx = {"view": "front", "L": 400.0}

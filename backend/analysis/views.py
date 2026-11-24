@@ -12,7 +12,7 @@ from rest_framework.response import Response
 
 from . import jobs
 from .models import Video
-from .pipeline.ingest import probe
+from .pipeline.s1_ingest import probe
 
 ALLOWED_EXT = {".mp4", ".mov", ".m4v"}
 
